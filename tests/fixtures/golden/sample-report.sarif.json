@@ -1,0 +1,481 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "security-preview",
+          "version": "0.1.0",
+          "informationUri": "https://github.com/anthropics/security-preview",
+          "rules": [
+            {
+              "id": "py.sqli",
+              "name": "SQL Injection",
+              "shortDescription": {
+                "text": "SQL Injection"
+              },
+              "fullDescription": {
+                "text": "Request-controlled `owner` is interpolated into the SQL string."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Injection",
+                "severity": "CRITICAL",
+                "cwe": "CWE-89"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/89.html"
+            },
+            {
+              "id": "js.command_injection",
+              "name": "Command Injection",
+              "shortDescription": {
+                "text": "Command Injection"
+              },
+              "fullDescription": {
+                "text": "Untrusted `src` is concatenated into a shell command."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Injection",
+                "severity": "CRITICAL",
+                "cwe": "CWE-78"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/78.html"
+            },
+            {
+              "id": "py.hardcoded_secret",
+              "name": "Hardcoded Credentials",
+              "shortDescription": {
+                "text": "Hardcoded Credentials"
+              },
+              "fullDescription": {
+                "text": "A live API key is committed to source control."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Secrets",
+                "severity": "HIGH",
+                "cwe": "CWE-798"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/798.html"
+            },
+            {
+              "id": "py.weak_hash",
+              "name": "Weak Password Hashing",
+              "shortDescription": {
+                "text": "Weak Password Hashing"
+              },
+              "fullDescription": {
+                "text": "MD5 is unsuitable for password storage."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Crypto",
+                "severity": "MEDIUM",
+                "cwe": "CWE-328"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/328.html"
+            },
+            {
+              "id": "py.open_redirect",
+              "name": "Open Redirect",
+              "shortDescription": {
+                "text": "Open Redirect"
+              },
+              "fullDescription": {
+                "text": "User-supplied `next` is used as a redirect target unchecked."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "Config",
+                "severity": "LOW"
+              }
+            },
+            {
+              "id": "generic.todo_security",
+              "name": "Security TODO Marker",
+              "shortDescription": {
+                "text": "Security TODO Marker"
+              },
+              "fullDescription": {
+                "text": "A security-relevant TODO remains in the codebase."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "Hygiene",
+                "severity": "INFO"
+              }
+            },
+            {
+              "id": "sca.npm.lodash",
+              "name": "Vulnerable dependency: lodash",
+              "shortDescription": {
+                "text": "Known vulnerability in lodash"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Dependency",
+                "severity": "CRITICAL"
+              }
+            },
+            {
+              "id": "sca.pypi.pyyaml",
+              "name": "Vulnerable dependency: pyyaml",
+              "shortDescription": {
+                "text": "Known vulnerability in pyyaml"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Dependency",
+                "severity": "CRITICAL"
+              }
+            },
+            {
+              "id": "sca.pypi.requests",
+              "name": "Vulnerable dependency: requests",
+              "shortDescription": {
+                "text": "Known vulnerability in requests"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Dependency",
+                "severity": "HIGH"
+              }
+            }
+          ]
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": false,
+          "workingDirectory": {
+            "uri": "/work/payments-api"
+          },
+          "startTimeUtc": "2026-09-01T14:22:00+00:00"
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "py.sqli",
+          "level": "error",
+          "message": {
+            "text": "Request-controlled `owner` is interpolated into the SQL string."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "api/reports.py"
+                },
+                "region": {
+                  "startLine": 142,
+                  "snippet": {
+                    "text": "141| owner = request.args[\"user\"]\n142| cur.execute(f\"SELECT * FROM reports WHERE owner = '{owner}'\")\n143| rows = cur.fetchall()"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "CRITICAL",
+            "confidence": "HIGH",
+            "category": "Injection",
+            "cwe": "CWE-89",
+            "cveIds": [
+              "CVE-2019-19844",
+              "CVE-2021-23336"
+            ],
+            "remediation": {
+              "vulnerable": "cur.execute(f\"... owner = '{owner}'\")",
+              "secure": "cur.execute(\"... owner = %s\", (owner,))"
+            }
+          }
+        },
+        {
+          "ruleId": "js.command_injection",
+          "level": "error",
+          "message": {
+            "text": "Untrusted `src` is concatenated into a shell command."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "worker/convert.js"
+                },
+                "region": {
+                  "startLine": 88,
+                  "snippet": {
+                    "text": "88| exec(\"ffmpeg -i \" + src + \" out.mp4\")"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "CRITICAL",
+            "confidence": "MEDIUM",
+            "category": "Injection",
+            "cwe": "CWE-78",
+            "cveIds": [],
+            "remediation": {
+              "vulnerable": "exec(\"ffmpeg -i \" + src + \" out.mp4\")",
+              "secure": "execFile(\"ffmpeg\", [\"-i\", src, \"out.mp4\"])"
+            }
+          }
+        },
+        {
+          "ruleId": "py.hardcoded_secret",
+          "level": "error",
+          "message": {
+            "text": "A live API key is committed to source control."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "config/settings.py"
+                },
+                "region": {
+                  "startLine": 12,
+                  "snippet": {
+                    "text": "12| STRIPE_KEY = \"sk_live_abcd\" + \"••••\""
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "HIGH",
+            "confidence": "HIGH",
+            "category": "Secrets",
+            "cwe": "CWE-798",
+            "cveIds": [],
+            "remediation": {
+              "vulnerable": "STRIPE_KEY = \"sk_live_********\"",
+              "secure": "STRIPE_KEY = os.environ[\"STRIPE_KEY\"]"
+            }
+          }
+        },
+        {
+          "ruleId": "py.weak_hash",
+          "level": "warning",
+          "message": {
+            "text": "MD5 is unsuitable for password storage."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "auth/users.py"
+                },
+                "region": {
+                  "startLine": 57,
+                  "snippet": {
+                    "text": "57| digest = hashlib.md5(password.encode()).hexdigest()"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "MEDIUM",
+            "confidence": "MEDIUM",
+            "category": "Crypto",
+            "cwe": "CWE-328",
+            "cveIds": [],
+            "remediation": {
+              "vulnerable": "hashlib.md5(password.encode()).hexdigest()",
+              "secure": "bcrypt.hashpw(password.encode(), bcrypt.gensalt())"
+            }
+          }
+        },
+        {
+          "ruleId": "py.open_redirect",
+          "level": "note",
+          "message": {
+            "text": "User-supplied `next` is used as a redirect target unchecked."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "web/views.py"
+                },
+                "region": {
+                  "startLine": 203,
+                  "snippet": {
+                    "text": "203| return redirect(request.args[\"next\"])"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "LOW",
+            "confidence": "LOW",
+            "category": "Config",
+            "cwe": null,
+            "cveIds": [],
+            "remediation": {
+              "vulnerable": "return redirect(request.args[\"next\"])",
+              "secure": "return redirect(url_for(safe_endpoint(request.args)))"
+            }
+          }
+        },
+        {
+          "ruleId": "generic.todo_security",
+          "level": "note",
+          "message": {
+            "text": "A security-relevant TODO remains in the codebase."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "core/auth.py"
+                },
+                "region": {
+                  "startLine": 9,
+                  "snippet": {
+                    "text": "9| # TODO: security - re-enable CSRF checks before launch"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "INFO",
+            "confidence": "LOW",
+            "category": "Hygiene",
+            "cwe": null,
+            "cveIds": [],
+            "remediation": {
+              "vulnerable": "# TODO: security - re-enable CSRF checks",
+              "secure": "Track the TODO in an issue and enable CSRF protection."
+            }
+          }
+        },
+        {
+          "ruleId": "sca.npm.lodash",
+          "level": "error",
+          "message": {
+            "text": "lodash 4.17.11 (npm): Prototype pollution in defaultsDeep."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "package-lock.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "CRITICAL",
+            "package": "lodash",
+            "version": "4.17.11",
+            "ecosystem": "npm",
+            "fixedVersion": "4.17.12",
+            "advisories": [
+              {
+                "id": "CVE-2019-10744",
+                "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-10744"
+              },
+              {
+                "id": "GHSA-jf85-cpcp-j695",
+                "url": "https://github.com/advisories/GHSA-jf85-cpcp-j695"
+              }
+            ]
+          }
+        },
+        {
+          "ruleId": "sca.pypi.pyyaml",
+          "level": "error",
+          "message": {
+            "text": "pyyaml 5.1 (PyPI): Arbitrary code execution via full_load."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "requirements.txt"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "CRITICAL",
+            "package": "pyyaml",
+            "version": "5.1",
+            "ecosystem": "PyPI",
+            "fixedVersion": "5.3.1",
+            "advisories": [
+              {
+                "id": "CVE-2020-1747",
+                "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1747"
+              }
+            ]
+          }
+        },
+        {
+          "ruleId": "sca.pypi.requests",
+          "level": "error",
+          "message": {
+            "text": "requests 2.19.1 (PyPI): Credential leak on cross-origin redirect."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "requirements.txt"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "HIGH",
+            "package": "requests",
+            "version": "2.19.1",
+            "ecosystem": "PyPI",
+            "fixedVersion": null,
+            "advisories": [
+              {
+                "id": "PYSEC-2018-28",
+                "url": "https://osv.dev/vulnerability/PYSEC-2018-28"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

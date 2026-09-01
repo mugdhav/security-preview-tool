@@ -1,0 +1,175 @@
+{
+  "tool_version": "0.1.0",
+  "target": "/work/payments-api",
+  "started_at": "2026-09-01T14:22:00+00:00",
+  "finished_at": "2026-09-01T14:22:03.100000+00:00",
+  "summary": {
+    "target": "/work/payments-api",
+    "by_severity": {
+      "CRITICAL": 2,
+      "HIGH": 1,
+      "MEDIUM": 1,
+      "LOW": 1,
+      "INFO": 1
+    },
+    "total_findings": 6,
+    "vulnerable_dependencies": 3,
+    "files_scanned": 342,
+    "dependencies_scanned": 47,
+    "duration_seconds": 3.1,
+    "partial": true,
+    "errors": 3
+  },
+  "findings": [
+    {
+      "rule_id": "py.sqli",
+      "name": "SQL Injection",
+      "severity": "CRITICAL",
+      "confidence": "HIGH",
+      "category": "Injection",
+      "cwe_id": "CWE-89",
+      "file_path": "api/reports.py",
+      "line": 142,
+      "code_snippet": "141| owner = request.args[\"user\"]\n142| cur.execute(f\"SELECT * FROM reports WHERE owner = '{owner}'\")\n143| rows = cur.fetchall()",
+      "description": "Request-controlled `owner` is interpolated into the SQL string.",
+      "remediation_vulnerable": "cur.execute(f\"... owner = '{owner}'\")",
+      "remediation_secure": "cur.execute(\"... owner = %s\", (owner,))",
+      "cve_ids": [
+        "CVE-2019-19844",
+        "CVE-2021-23336"
+      ]
+    },
+    {
+      "rule_id": "js.command_injection",
+      "name": "Command Injection",
+      "severity": "CRITICAL",
+      "confidence": "MEDIUM",
+      "category": "Injection",
+      "cwe_id": "CWE-78",
+      "file_path": "worker/convert.js",
+      "line": 88,
+      "code_snippet": "88| exec(\"ffmpeg -i \" + src + \" out.mp4\")",
+      "description": "Untrusted `src` is concatenated into a shell command.",
+      "remediation_vulnerable": "exec(\"ffmpeg -i \" + src + \" out.mp4\")",
+      "remediation_secure": "execFile(\"ffmpeg\", [\"-i\", src, \"out.mp4\"])",
+      "cve_ids": []
+    },
+    {
+      "rule_id": "py.hardcoded_secret",
+      "name": "Hardcoded Credentials",
+      "severity": "HIGH",
+      "confidence": "HIGH",
+      "category": "Secrets",
+      "cwe_id": "CWE-798",
+      "file_path": "config/settings.py",
+      "line": 12,
+      "code_snippet": "12| STRIPE_KEY = \"sk_live_abcd\" + \"\u2022\u2022\u2022\u2022\"",
+      "description": "A live API key is committed to source control.",
+      "remediation_vulnerable": "STRIPE_KEY = \"sk_live_********\"",
+      "remediation_secure": "STRIPE_KEY = os.environ[\"STRIPE_KEY\"]",
+      "cve_ids": []
+    },
+    {
+      "rule_id": "py.weak_hash",
+      "name": "Weak Password Hashing",
+      "severity": "MEDIUM",
+      "confidence": "MEDIUM",
+      "category": "Crypto",
+      "cwe_id": "CWE-328",
+      "file_path": "auth/users.py",
+      "line": 57,
+      "code_snippet": "57| digest = hashlib.md5(password.encode()).hexdigest()",
+      "description": "MD5 is unsuitable for password storage.",
+      "remediation_vulnerable": "hashlib.md5(password.encode()).hexdigest()",
+      "remediation_secure": "bcrypt.hashpw(password.encode(), bcrypt.gensalt())",
+      "cve_ids": []
+    },
+    {
+      "rule_id": "py.open_redirect",
+      "name": "Open Redirect",
+      "severity": "LOW",
+      "confidence": "LOW",
+      "category": "Config",
+      "cwe_id": null,
+      "file_path": "web/views.py",
+      "line": 203,
+      "code_snippet": "203| return redirect(request.args[\"next\"])",
+      "description": "User-supplied `next` is used as a redirect target unchecked.",
+      "remediation_vulnerable": "return redirect(request.args[\"next\"])",
+      "remediation_secure": "return redirect(url_for(safe_endpoint(request.args)))",
+      "cve_ids": []
+    },
+    {
+      "rule_id": "generic.todo_security",
+      "name": "Security TODO Marker",
+      "severity": "INFO",
+      "confidence": "LOW",
+      "category": "Hygiene",
+      "cwe_id": null,
+      "file_path": "core/auth.py",
+      "line": 9,
+      "code_snippet": "9| # TODO: security - re-enable CSRF checks before launch",
+      "description": "A security-relevant TODO remains in the codebase.",
+      "remediation_vulnerable": "# TODO: security - re-enable CSRF checks",
+      "remediation_secure": "Track the TODO in an issue and enable CSRF protection.",
+      "cve_ids": []
+    }
+  ],
+  "dependency_findings": [
+    {
+      "ecosystem": "npm",
+      "package": "lodash",
+      "version": "4.17.11",
+      "advisory_ids": [
+        "CVE-2019-10744",
+        "GHSA-jf85-cpcp-j695"
+      ],
+      "severity": "CRITICAL",
+      "fixed_version": "4.17.12",
+      "source_manifest": "package-lock.json",
+      "summary": "Prototype pollution in defaultsDeep."
+    },
+    {
+      "ecosystem": "PyPI",
+      "package": "pyyaml",
+      "version": "5.1",
+      "advisory_ids": [
+        "CVE-2020-1747"
+      ],
+      "severity": "CRITICAL",
+      "fixed_version": "5.3.1",
+      "source_manifest": "requirements.txt",
+      "summary": "Arbitrary code execution via full_load."
+    },
+    {
+      "ecosystem": "PyPI",
+      "package": "requests",
+      "version": "2.19.1",
+      "advisory_ids": [
+        "PYSEC-2018-28"
+      ],
+      "severity": "HIGH",
+      "fixed_version": null,
+      "source_manifest": "requirements.txt",
+      "summary": "Credential leak on cross-origin redirect."
+    }
+  ],
+  "errors": [
+    {
+      "stage": "walk",
+      "target": "assets/vendor.min.js",
+      "message": "exceeded the 2 MB size cap; file skipped"
+    },
+    {
+      "stage": "enrich",
+      "target": "services.nvd.nist.gov",
+      "message": "connection timeout after 3 retries; 12 of 40 CWE lookups failed"
+    },
+    {
+      "stage": "sca",
+      "target": "pom.xml",
+      "message": "malformed XML at line 44; Java dependencies not checked"
+    }
+  ],
+  "partial": true
+}
