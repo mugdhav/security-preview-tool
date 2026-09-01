@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    actionpack (6.0.3.2)
+      rack (~> 2.0, >= 2.0.8)
+    nokogiri (1.10.9)
+    rack (2.2.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  nokogiri
+  rack
+
+BUNDLED WITH
+   2.1.4
