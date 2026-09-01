@@ -1,0 +1,46 @@
+{
+  "_README": [
+    "Example Claude Code hooks for security-preview. JSON has no comments, so the",
+    "notes live in this string array. To install: copy the 'hooks' object below",
+    "into '.claude/settings.json' (project) or '~/.claude/settings.json' (user),",
+    "merging it with any hooks you already have. Requires 'security-preview' on",
+    "PATH -- run 'python scripts/bootstrap.py' first, then activate the venv (or",
+    "install the package globally with 'uv tool install' / 'pipx install').",
+    "",
+    "SessionStart: runs a quiet high-confidence scan of the repo at session start",
+    "and feeds the summary back to Claude as context. Never blocks; a no-op when",
+    "the CLI is not installed.",
+    "",
+    "PreToolUse (matcher 'Bash'): before any Bash command, if the command is a",
+    "'git commit', run 'security-preview scan . --format json' and compare the",
+    "CRITICAL count against the baseline in '.security-preview/baseline-critical'",
+    "(a single integer; treated as 0 when the file is absent). Exit code 2 blocks",
+    "the commit and shows the message to Claude when the count has grown. To adopt",
+    "the current CRITICAL count as the accepted baseline:",
+    "  mkdir -p .security-preview",
+    "  security-preview scan . --format json | python -c \"import json,sys; print(json.load(sys.stdin)['summary']['by_severity']['CRITICAL'])\" > .security-preview/baseline-critical"
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -c \"import shutil,subprocess,sys; sys.exit(0) if not shutil.which('security-preview') else subprocess.run(['security-preview','scan','.','--format','text','--min-confidence','high'])\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -c \"import json,os,subprocess,sys\ndata=json.load(sys.stdin)\ncmd=(data.get('tool_input') or {}).get('command','')\nif 'git commit' not in cmd:\n    sys.exit(0)\nif not __import__('shutil').which('security-preview'):\n    print('security-preview not installed; skipping commit gate', file=sys.stderr)\n    sys.exit(0)\nproc=subprocess.run(['security-preview','scan','.','--format','json'], capture_output=True, text=True)\ntry:\n    result=json.loads(proc.stdout)\nexcept ValueError:\n    print('security-preview: could not parse scan output; allowing commit', file=sys.stderr)\n    sys.exit(0)\ncrit=result.get('summary',{}).get('by_severity',{}).get('CRITICAL',0)\npath=os.path.join('.security-preview','baseline-critical')\nbaseline=0\nif os.path.exists(path):\n    baseline=int((open(path).read().strip() or '0'))\nif crit>baseline:\n    print('security-preview: blocking commit -- %d CRITICAL finding(s), baseline %d. Fix them (security-preview scan . --format markdown) or update %s.' % (crit, baseline, path), file=sys.stderr)\n    sys.exit(2)\nsys.exit(0)\""
+          }
+        ]
+      }
+    ]
+  }
+}
