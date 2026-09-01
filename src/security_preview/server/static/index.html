@@ -136,6 +136,11 @@
 </header>
 
 <div class="scanbar" id="scanbar">
+  <button class="btn" id="pick-btn" type="button" hidden
+          style="background:var(--card);color:var(--ink);border-color:var(--border-strong)">
+    <svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h3.8l1.6 1.8h6.6A1.5 1.5 0 0 1 17 7.3V14a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 2 14V5.5Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+    Choose folder…
+  </button>
   <label class="path" id="pathwrap">
     <svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h3.8l1.6 1.8h6.6A1.5 1.5 0 0 1 17 7.3V14a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 2 14V5.5Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
     <input id="path" type="text" spellcheck="false" placeholder="Paste or type an absolute folder path…" aria-label="Folder path">
@@ -631,6 +636,51 @@
 
   $("scan-btn").addEventListener("click", runScan);
   $("path").addEventListener("keydown", function (e) { if (e.key === "Enter") runScan(); });
+
+  // ---- no-folder-chosen guard ----------------------------------------
+  function syncScanEnabled() {
+    var empty = !$("path").value.trim();
+    $("scan-btn").disabled = empty;
+    $("scan-btn").title = empty ? "Choose a folder to scan" : "";
+  }
+  $("path").addEventListener("input", syncScanEnabled);
+  syncScanEnabled();
+
+  // ---- desktop mode: native folder picker ---------------------------
+  function wirePicker() {
+    var btn = $("pick-btn");
+    btn.hidden = false;
+    btn.addEventListener("click", function () {
+      btn.disabled = true;
+      fetch("/api/pick-folder", { method: "POST" })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (j && j.path) {
+            $("path").value = j.path;
+            $("pathwrap").classList.remove("err");
+            syncScanEnabled();
+          }
+        })
+        .catch(function () {})
+        .finally(function () { btn.disabled = false; });
+    });
+  }
+
+  fetch("/healthz")
+    .then(function (r) { return r.json(); })
+    .then(function (j) { if (j && j.mode === "desktop") wirePicker(); })
+    .catch(function () {});
+
+  // ---- deep link: ?path=/abs/dir&autoscan=1 ------------------------
+  try {
+    var qs = new URLSearchParams(location.search);
+    var qpath = qs.get("path");
+    if (qpath) {
+      $("path").value = qpath;
+      syncScanEnabled();
+      if (qs.get("autoscan") === "1") runScan();
+    }
+  } catch (e) {}
 
   showEmpty();
 })();

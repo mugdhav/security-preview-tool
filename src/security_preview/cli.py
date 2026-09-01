@@ -5,7 +5,7 @@ Subcommands::
     security-preview scan <path> [--format text|markdown|json|sarif|html]
                                  [--offline] [--no-sca]
                                  [--min-confidence HIGH|MEDIUM|LOW] [--out FILE]
-    security-preview serve [--port PORT]
+    security-preview serve [--port PORT] [--open|--no-open] [--desktop]
     security-preview selftest
 
 Exit codes for ``scan``/``selftest``: ``0`` when the scan completed with no
@@ -32,7 +32,8 @@ __all__ = ["main"]
 
 _FORMATS = ("text", "markdown", "json", "sarif", "html")
 _CONFIDENCES = ("HIGH", "MEDIUM", "LOW")
-_DEFAULT_PORT = 8765
+# 0 => let the OS assign a free port; the resolved URL is printed on startup.
+_DEFAULT_PORT = 0
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -72,7 +73,30 @@ def _build_parser() -> argparse.ArgumentParser:
     )
 
     p_serve = sub.add_parser("serve", help="run the local browser app")
-    p_serve.add_argument("--port", type=int, default=_DEFAULT_PORT, help="TCP port to bind")
+    p_serve.add_argument(
+        "--port",
+        type=int,
+        default=_DEFAULT_PORT,
+        help="TCP port to bind (default: 0 = OS-assigned free port)",
+    )
+    p_serve.add_argument(
+        "--open",
+        dest="open",
+        action="store_true",
+        default=True,
+        help="open the URL in a browser once the server is up (default)",
+    )
+    p_serve.add_argument(
+        "--no-open",
+        dest="open",
+        action="store_false",
+        help="do not open a browser; just print the URL",
+    )
+    p_serve.add_argument(
+        "--desktop",
+        action="store_true",
+        help="open a native desktop window instead of a browser tab",
+    )
 
     sub.add_parser("selftest", help="scan bundled fixtures and print a JSON summary")
     return parser
@@ -124,14 +148,59 @@ def _cmd_scan(args: argparse.Namespace) -> int:
     return _exit_code_for(result)
 
 
+def _resolved_port(server, fallback: int) -> int:
+    """Best-effort read of the port uvicorn actually bound (relevant for --port 0)."""
+    try:
+        return server.servers[0].sockets[0].getsockname()[1]
+    except (AttributeError, IndexError, OSError):  # pragma: no cover - defensive
+        return fallback
+
+
 def _cmd_serve(args: argparse.Namespace) -> int:
+    if args.desktop:
+        # Lazy import: pywebview / window stack is only needed here.
+        from . import desktop
+
+        return desktop.main([])
+
     # Lazy import: the server + uvicorn stack is only needed for this subcommand.
+    import threading
+    import time
+    import webbrowser
+
     import uvicorn
 
     from .server import app as server_app
 
-    application = server_app.create_app()
-    uvicorn.run(application, host="127.0.0.1", port=args.port)
+    application = server_app.create_app(mode="browser")
+    config = uvicorn.Config(
+        application,
+        host="127.0.0.1",
+        port=args.port,
+        log_level="warning",
+        access_log=False,
+    )
+    server = uvicorn.Server(config)
+    thread = threading.Thread(target=server.run, name="security-preview-server", daemon=True)
+    thread.start()
+
+    # Wait for uvicorn to finish binding so we can print the real URL.
+    deadline = time.monotonic() + 10.0
+    while not server.started and thread.is_alive() and time.monotonic() < deadline:
+        time.sleep(0.05)
+
+    port = _resolved_port(server, args.port)
+    url = f"http://127.0.0.1:{port}"
+    print(f"security-preview listening on {url}  (Ctrl+C to stop)")
+
+    if args.open:
+        webbrowser.open(url)
+
+    try:
+        thread.join()
+    except KeyboardInterrupt:
+        server.should_exit = True
+        thread.join(timeout=5)
     return 0
 
 

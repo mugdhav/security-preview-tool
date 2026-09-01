@@ -96,14 +96,33 @@ regardless of the code — see the hook example below.
 
 ## Other subcommands
 
-### `security-preview serve [--port N]`
+### `security-preview serve [--port N] [--open|--no-open] [--desktop]`
 
-Starts the local browser UI, bound to `127.0.0.1` only, and opens a browser tab.
-If `--port` is omitted a free port is chosen. In the page: paste a folder path
+Starts the local UI, bound to `127.0.0.1` only.
+
+- `--port` defaults to `0` → the OS assigns a free port. The resolved URL is
+  printed as `security-preview → http://127.0.0.1:<port>  (Ctrl+C to stop)`.
+- `--open` (default) opens that URL in your browser once the server answers
+  `GET /healthz`; `--no-open` just prints it.
+- `--desktop` opens a **native window** instead of a browser tab and enables the
+  **Choose folder…** button (native OS folder picker). Needs `pywebview`
+  (`pip install "security-preview[desktop]"`); without it, `serve` falls back to
+  the browser.
+
+In the page: click **Choose folder…** (desktop) or paste an absolute folder path
 (Windows and POSIX separators both accepted), tick `Offline` / `Scan
 dependencies`, pick `Min confidence`, click **Scan**, read the rendered report,
-and use `Download ▾` to save it as markdown / json / sarif / html. The UI is
-desktop-only and ships no external resources.
+and use `Download ▾` to save it. The UI ships no external resources.
+
+The folder you point at **is** the root for that scan — there is no global
+allowed root. `..` tokens and symlink escapes in a typed path are still rejected
+with HTTP 400.
+
+For the packaged double-click app (installers, no Python), see
+[`DESKTOP.md`](DESKTOP.md).
+
+> **Removed:** the `SECURITY_PREVIEW_ROOT` environment variable no longer exists.
+> The scan root now comes from the folder chosen per scan.
 
 ### `security-preview selftest`
 

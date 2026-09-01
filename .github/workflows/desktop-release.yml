@@ -1,0 +1,89 @@
+name: desktop-release
+
+# Builds the double-click desktop app for Windows, macOS and Linux.
+#  - push to a v* tag -> attach installers to a GitHub Release
+#  - manual dispatch  -> build + upload artifacts only (no release)
+#
+# Signing: certs are read from secrets when present; otherwise the build ships
+# UNSIGNED and docs/DESKTOP.md documents the one-time SmartScreen / Gatekeeper
+# "allow" step. Signing is a v1.0 blocker, not a preview blocker.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m pip install -e ".[dev]"
+      - run: pytest -q
+      # Dogfood: scan our own tree before we package it.
+      - run: python -m security_preview.cli scan . --format text --min-confidence high
+
+  build:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, target: windows }
+          - { os: macos-latest,   target: macOS }
+          - { os: ubuntu-latest,  target: linux }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Linux system deps for WebKitGTK
+        if: matrix.target == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgirepository1.0-dev gir1.2-webkit2-4.1 gir1.2-gtk-3.0 \
+            libcairo2-dev pkg-config python3-dev
+
+      - run: python -m pip install -e ".[package]"
+
+      - name: Smoke test the launcher
+        run: python scripts/build_desktop.py check
+
+      - name: Briefcase package
+        run: |
+          python -m briefcase create ${{ matrix.target }}
+          python -m briefcase build ${{ matrix.target }}
+          python -m briefcase package ${{ matrix.target }} --adhoc-sign
+
+      - name: Portable PyInstaller build (Windows only)
+        if: matrix.target == 'windows'
+        run: python scripts/build_desktop.py portable
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: security-preview-${{ matrix.target }}
+          path: |
+            dist/*.msi
+            dist/*.dmg
+            dist/*.pkg
+            dist/*.AppImage
+            dist/*.deb
+            dist/security-preview*.exe
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: artifacts }
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          fail_on_unmatched_files: false

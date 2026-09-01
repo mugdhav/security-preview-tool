@@ -67,17 +67,19 @@ def test_bad_format_is_422(client):
 
 
 # --------------------------------------------------------------------------- #
-# Path confinement
+# Path confinement -- the picked folder is its own root (no global allowed root)
 # --------------------------------------------------------------------------- #
 def test_dotdot_traversal_rejected(client):
     r = client.post("/api/scan", json={"path": str(client.root / ".." / "etc")})
     assert r.status_code == 400
 
 
-def test_path_outside_root_rejected(client, tmp_path_factory):
-    outside = tmp_path_factory.mktemp("outside")
+def test_folder_on_a_different_root_is_allowed(client, tmp_path_factory):
+    # No SECURITY_PREVIEW_ROOT / cwd coupling: any real directory scans fine.
+    outside = tmp_path_factory.mktemp("elsewhere")
     r = client.post("/api/scan", json={"path": str(outside)})
-    assert r.status_code == 400
+    assert r.status_code == 200
+    assert client.calls["path"] == str(outside)
 
 
 def test_symlink_escape_rejected(client, tmp_path_factory):
@@ -141,6 +143,35 @@ def test_scan_called_with_confined_realpath(client):
 # --------------------------------------------------------------------------- #
 # UI
 # --------------------------------------------------------------------------- #
+def test_healthz_reports_browser_mode(client):
+    r = client.get("/healthz")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["mode"] == "browser"
+
+
+def test_pick_folder_is_404_in_browser_mode(client):
+    r = client.post("/api/pick-folder")
+    assert r.status_code == 404
+
+
+def test_desktop_mode_pick_folder_returns_chosen_path(tmp_path):
+    picked = tmp_path / "chosen"
+    picked.mkdir()
+    app = create_app(mode="desktop", folder_picker=lambda: str(picked))
+    c = TestClient(app)
+    assert c.get("/healthz").json()["mode"] == "desktop"
+    r = c.post("/api/pick-folder")
+    assert r.status_code == 200 and r.json() == {"path": str(picked)}
+
+
+def test_desktop_mode_pick_folder_cancelled(tmp_path):
+    app = create_app(mode="desktop", folder_picker=lambda: None)
+    r = TestClient(app).post("/api/pick-folder")
+    assert r.status_code == 200 and r.json() == {"cancelled": True}
+
+
 def test_index_served_as_html(client):
     r = client.get("/")
     assert r.status_code == 200

@@ -79,11 +79,15 @@ missing, not a directory, bad `--format`). Network / enrichment failures only ma
 the report PARTIAL. The report is still emitted on exit `1`, so a new-vs-baseline
 CI gate can parse the JSON regardless of the code.
 
-### `security-preview serve [--port N]`
+### `security-preview serve [--port N] [--open|--no-open] [--desktop]`
 
-Start the local browser UI on `http://127.0.0.1:<port>` (127.0.0.1 only, random
-free port if `--port` is omitted) and open a browser. Paste a folder path, choose
-options, click Scan, read the rendered report, download it as md/json/sarif/html.
+Start the local UI on `http://127.0.0.1:<port>` (127.0.0.1 only; `--port 0`, the
+default, picks a free port and prints the URL). `--open` (default) opens a
+browser once `GET /healthz` answers; `--desktop` opens a native window with a
+folder picker (needs the `desktop` extra). Choose a folder, set options, click
+Scan, read the report, download it as md/json/sarif/html. The folder picked per
+scan is that scan's root — no `SECURITY_PREVIEW_ROOT`, no global allowed root.
+For the packaged double-click app see `docs/DESKTOP.md`.
 
 ### `security-preview selftest`
 

@@ -13,9 +13,12 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.4", "mypy>=1.9"]
+desktop = ["pywebview>=5.0"]
+package = ["pywebview>=5.0", "briefcase>=0.3.19", "pyinstaller>=6.6"]
 
 [project.scripts]
 security-preview = "security_preview.cli:main"
+security-preview-desktop = "security_preview.desktop:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -34,3 +37,58 @@ line-length = 100
 src = ["src", "tests"]
 # Deliberately insecure/idiomatic sample code used as SAST detection fixtures.
 extend-exclude = ["tests/fixtures"]
+
+# --------------------------------------------------------------------------- #
+# Desktop packaging (BeeWare Briefcase). Build with:
+#   python -m pip install -e ".[package]"
+#   briefcase create <windows|macOS|linux>
+#   briefcase build  <windows|macOS|linux>
+#   briefcase package <windows|macOS|linux>
+# Produces an installer with a Start-Menu / desktop shortcut and app icon, so a
+# non-technical user just double-clicks -- no Python, no terminal, no config.
+# --------------------------------------------------------------------------- #
+[tool.briefcase]
+project_name = "security-preview"
+bundle = "dev.securitypreview"
+version = "0.1.0"
+url = "https://github.com/MugdhaV/security-preview"
+license = "MIT"
+author = "security-preview contributors"
+author_email = "vmugdha.ai@gmail.com"
+
+[tool.briefcase.app.security-preview]
+formal_name = "security-preview"
+description = "Deterministic, non-LLM static security scanner for a local project directory."
+long_description = """A local, offline-capable desktop app: choose a folder, click Scan, read a
+vulnerability report with per-finding remediation. Nothing leaves the machine
+except optional CVE lookups. Binds 127.0.0.1 only.
+"""
+icon = "resources/icons/security-preview"
+sources = ["src/security_preview"]
+test_sources = ["tests"]
+requires = [
+  "jinja2>=3.1",
+  "httpx>=0.27",
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.29",
+  "pydantic>=2.6",
+  "pywebview>=5.0",
+]
+test_requires = ["pytest>=8", "pytest-asyncio>=0.23"]
+
+[tool.briefcase.app.security-preview.windows]
+# Win 11 ships the WebView2 runtime; the installer carries the evergreen
+# bootstrapper for Win 10 machines that lack it.
+use_full_install_path = false
+
+[tool.briefcase.app.security-preview.macOS]
+universal_build = true
+
+[tool.briefcase.app.security-preview.linux]
+requires = ["pywebview>=5.0"]
+
+[tool.briefcase.app.security-preview.linux.system.debian]
+system_requires = ["libgirepository1.0-dev", "gir1.2-webkit2-4.1", "gir1.2-gtk-3.0"]
+
+[tool.briefcase.app.security-preview.linux.appimage]
+manylinux = "manylinux_2_28"

@@ -171,15 +171,64 @@ def test_no_subcommand_exits_nonzero():
 # --------------------------------------------------------------------------- #
 # serve / selftest
 # --------------------------------------------------------------------------- #
-def test_serve_lazy_imports_and_runs_uvicorn(monkeypatch):
+def test_serve_binds_localhost_and_prints_url(monkeypatch, capsys):
     import uvicorn
 
     seen = {}
-    monkeypatch.setattr(uvicorn, "run", lambda app, **kw: seen.update(kw))
+
+    class FakeServer:
+        def __init__(self, config):
+            seen["host"] = config.host
+            seen["port"] = config.port
+            self.started = True
+            self.should_exit = False
+            self.servers: list = []
+
+        def run(self):
+            seen["ran"] = True
+
+    monkeypatch.setattr(uvicorn, "Server", FakeServer)
+    monkeypatch.setattr("webbrowser.open", lambda url: seen.setdefault("opened", url))
+
     rc = cli.main(["serve", "--port", "9191"])
     assert rc == 0
     assert seen["host"] == "127.0.0.1"
     assert seen["port"] == 9191
+    assert seen["ran"] is True
+    out = capsys.readouterr().out
+    assert "http://127.0.0.1:9191" in out
+    assert seen["opened"] == "http://127.0.0.1:9191"  # --open is the default
+
+
+def test_serve_no_open_skips_browser(monkeypatch, capsys):
+    import uvicorn
+
+    class FakeServer:
+        def __init__(self, config):
+            self.started = True
+            self.should_exit = False
+            self.servers: list = []
+
+        def run(self):
+            pass
+
+    opened: list = []
+    monkeypatch.setattr(uvicorn, "Server", FakeServer)
+    monkeypatch.setattr("webbrowser.open", lambda url: opened.append(url))
+
+    rc = cli.main(["serve", "--port", "8000", "--no-open"])
+    assert rc == 0
+    assert opened == []
+
+
+def test_serve_desktop_delegates_to_launcher(monkeypatch):
+    from security_preview import desktop
+
+    seen = {}
+    monkeypatch.setattr(desktop, "main", lambda argv=None: seen.setdefault("argv", argv) or 0)
+    rc = cli.main(["serve", "--desktop"])
+    assert rc == 0
+    assert "argv" in seen
 
 
 def test_selftest_prints_json_summary_and_exits_int(capsys):

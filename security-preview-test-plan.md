@@ -104,10 +104,12 @@ Legend: **[auto]** already covered by `tests/test_cli.py` / `test_scan.py`; **[m
 
 | ID | Case | Expected |
 |---|---|---|
-| CLI-40 | Default port | `security-preview serve` → uvicorn binds `127.0.0.1:8765`; `GET /` returns HTML 200. **[manual]** |
+| CLI-40 | Default port | `security-preview serve` (no `--port`) → OS-assigned free port; stdout prints `security-preview → http://127.0.0.1:<port>  (Ctrl+C to stop)`; `GET /` returns HTML 200; `GET /healthz` → `{"ok":true,"mode":"browser"}`. **[auto: bind+URL; manual: real browser]** |
 | CLI-41 | `--port N` | Binds the given port; refuses / errors clearly if taken. **[manual]** |
 | CLI-42 | Bind scope | `curl http://<LAN-IP>:<port>/` from another host → connection refused (127.0.0.1 only). **[manual]** |
 | CLI-43 | Lazy import | `serve`'s `uvicorn` / `server.app` import is inside the handler — `scan`/`selftest` work in an env without `uvicorn` importable. **[manual]** |
+| CLI-44 | `--open` / `--no-open` | Default opens the printed URL via `webbrowser.open` after `/healthz` answers; `--no-open` prints only. **[auto]** |
+| CLI-45 | `--desktop` | Delegates to `security_preview.desktop.main`; with `pywebview` absent it falls back to the system browser and still serves. **[auto: delegation; manual: real window]** |
 
 ---
 
@@ -123,11 +125,12 @@ Legend: **[auto]** already covered by `tests/test_cli.py` / `test_scan.py`; **[m
 | API-04 | Bad `format` | `"xml"` → 422 `format must be one of ('json','md','sarif','html')`. **[auto]** |
 | API-05 | Bad `min_confidence` | `"URGENT"` → 422. Lowercase `"medium"` → accepted, normalised to `MEDIUM`. **[auto]** |
 | API-06 | `..` traversal | `path:"../secrets"` → 400 `must not contain '..'` (rejected before FS touch). **[auto]** |
-| API-07 | Absolute path outside root | `path:"/etc"` (root = repo) → 400 `escapes the allowed root`. **[auto]** |
-| API-08 | Symlink escape | Create `link → /etc` inside root, `path:"link"` → 400 (realpath check). **[auto]** |
-| API-09 | Path not a directory | `path:"README.md"` → 400 `not a directory`. **[auto]** |
-| API-10 | Non-existent under root | `path:"nope/"` → 400. **[auto]** |
-| API-11 | Allowed root via env | `SECURITY_PREVIEW_ROOT=/tmp/proj` → relative `path` resolves under it; paths elsewhere rejected. **[manual]** |
+| API-07 | Folder is its own root | Absolute `path` to **any** real directory (any drive, outside cwd/home) → 200; that dir is passed to `scan` verbatim. No global allowed root. **[auto]** |
+| API-08 | Symlink escape | `path` traverses a symlink that resolves elsewhere (`realpath != abspath`) → 400 `path escapes via a symlink`. **[auto]** |
+| API-09 | Path not a directory | `path:"README.md"` → 400 `path is not a directory`. **[auto]** |
+| API-10 | Non-existent path | `path` to a missing dir → 400. **[auto]** |
+| API-11 | `/healthz` + mode | `GET /healthz` → `{"ok":true,"mode":"browser"}`; `create_app(mode="desktop", folder_picker=…)` → `"desktop"`. **[auto]** |
+| API-16 | `POST /api/pick-folder` | browser mode → 404; desktop mode → `{"path": <picked>}` from `folder_picker`, or `{"cancelled": true}` when it returns falsy. Performs no FS writes. **[auto]** |
 | API-12 | Scan timeout | `create_app(scan_timeout=0.01)` + real scan → 504 `scan exceeded …s time budget`; server stays responsive after. **[auto]** |
 | API-13 | Config threading | `offline:true` ⇒ `enrich_nvd=False` in the `ScanConfig` passed to `scan`; `run_sca` passed through; `follow_symlinks` always False. **[auto]** |
 | API-14 | Response shape on partial | Force `scan` to return a partial `ScanResult` → `partial:true`, `errors[]` populated, still 200. **[manual]** |
@@ -160,6 +163,27 @@ Run `security-preview serve`, drive in Chromium at desktop width.
 | UI-10 | Accessibility smoke | Keyboard-reachable controls, focus visible, colour not the only severity signal (icon+word), contrast ≥ AA. |
 | UI-11 | Determinism | Same path + options ⇒ identical rendered findings/order across runs. |
 | UI-12 | Path separators | Windows `C:\proj` and POSIX `/proj` both accepted in the field. |
+| UI-13 | **Choose folder…** button | Desktop mode (`/healthz` → `mode:"desktop"`): button visible, opens the native folder dialog, fills the field with an absolute path, enables Scan; cancel leaves the field unchanged. Browser mode: button hidden, field stays free-text. |
+| UI-14 | Deep link | Opening `/?path=<abs>&autoscan=1` pre-fills the path and starts a scan (used by the desktop `--scan` launch and the Explorer right-click verb). |
+
+### 4.4 Desktop app (packaged) — manual, per `docs/DESKTOP.md`
+
+| ID | Case |
+|---|---|
+| DESK-01 | Fresh Windows 11 VM, no Python: run the `.msi` → desktop + Start-Menu icon present → double-click → window opens < 5 s → **Choose folder…** → scan → results shown. |
+| DESK-02 | Same on macOS (`.app` from `.dmg`) and Linux (AppImage). |
+| DESK-03 | **Choose folder…** opens the native dialog; cancel leaves the field unchanged; pick fills an absolute path and enables Scan. |
+| DESK-04 | Scan a folder on a **different drive / outside any "root"** → succeeds (no root coupling). |
+| DESK-05 | `..`, symlink-to-`/etc`, UNC path typed into the field → still 400. |
+| DESK-06 | Close the window mid-scan → process exits, port freed, no orphan `uvicorn`. |
+| DESK-07 | Launch twice → defined behaviour (single window focused, or a fresh scan). |
+| DESK-08 | Offline machine (no NIC) → app starts, scans with Offline checked, PARTIAL banner shown. |
+| DESK-09 | WebView2 missing (Win 10 clean) → installer bootstraps it, or the app falls back to the browser with a clear message. |
+| DESK-10 | `security-preview-desktop --scan <folder>` → window opens pre-pointed and scans (Explorer right-click verb). |
+| DESK-11 | Uninstaller removes app, shortcuts, and any context-menu keys. |
+| DESK-12 | Antivirus / SmartScreen: signed build shows publisher, no hard block; unsigned build documented allow-step works. |
+| DESK-13 | `security-preview serve` with `pywebview` **not** installed → browser fallback, `--open` works, `--desktop` degrades gracefully. |
+| DESK-14 | `python scripts/build_desktop.py check` passes (launcher smoke: `/healthz` + `/api/pick-folder`). **[auto-capable]** |
 
 ---
 
@@ -233,8 +257,9 @@ Fresh agent session with the skill installed; observe whether it invokes `securi
 - NET-05: Cache — first online run populates `~/.security-preview/cache/`; second run within TTL makes no NVD call; past `cache_ttl_hours` it refetches. **[auto: test_cache/test_enrich]**
 
 ### 6.3 Security / hardening
-- SEC-01: App path confinement — every API-06…10 case above; plus `%2e%2e`, UNC `\\host\share`, `NUL`/`CON` on Windows, deeply nested symlink chains. **[auto + manual]**
-- SEC-02: App bound to `127.0.0.1` only (CLI-42). **[manual]**
+- SEC-01: App path confinement — every API-06…10 case above; plus `%2e%2e`, UNC `\\host\share`, `NUL`/`CON` on Windows, deeply nested symlink chains. The picked folder is its own root (D1): confinement blocks *escapes* (`..`, symlink-elsewhere), not scanning a directory that happens to sit outside cwd/home. **[auto + manual]**
+- SEC-02: App bound to `127.0.0.1` only (CLI-42) — including the desktop bundle and `serve --desktop`. **[manual]**
+- SEC-07: `POST /api/pick-folder` exists only in desktop mode, only opens a dialog, performs no FS writes, returns a path the user explicitly picked (API-16). **[auto]**
 - SEC-03: Secret values masked in `code_snippet` everywhere they surface (finding, all 5 renderers, API response, UI). **[both]**
 - SEC-04: HTML report / UI ship no `<script>`, no remote resources → safe to open from disk / email. **[auto]**
 - SEC-05: `max_files` / `max_file_bytes` caps enforced by the walker; oversized/over-count → `errors.add("walk", …)`, scan still completes. **[auto: test_walker]**
@@ -251,6 +276,9 @@ Fresh agent session with the skill installed; observe whether it invokes `securi
 - PKG-03: `report/templates/report.html.j2` is packaged (hatch `packages=["src/security_preview"]`) — `--format html` works from an installed wheel, not just the source tree.
 - PKG-04: `import security_preview` exposes the assembled API (`scan` via `security_preview.scan`, `render`, `FORMATS`, models, `ScanConfig`); `from security_preview.scan import scan` works.
 - PKG-05: `ruff check .` clean; `mypy src` clean.
+- PKG-06: `pip install "security-preview[desktop]"` adds `pywebview`; `security-preview-desktop` console script on PATH; `python -m security_preview` opens the window.
+- PKG-07: `briefcase create/build/package <windows|macOS|linux>` produce an installer with a shortcut + icon; `scripts/build_desktop.py portable` produces a one-file `.exe`. Bundled deps pinned; `security-preview scan .` run on the build tree in CI before packaging (dogfood). **[CI: `.github/workflows/desktop-release.yml`]**
+- PKG-08: `server/static/index.html` is packaged in the wheel and the frozen bundle — `GET /` works from an installed wheel and from the Briefcase/PyInstaller app, not just the source tree.
 
 ---
 
@@ -265,12 +293,13 @@ Fresh agent session with the skill installed; observe whether it invokes `securi
 | On-disk TTL cache | `tests/test_cache.py` | 7 |
 | Renderers text/md/json/sarif/html + goldens + determinism | `tests/test_report.py` | 11 |
 | Orchestrator sequencing / flag threading / partial | `tests/test_scan.py` | 11 |
-| CLI argparse / exit codes / `--out` / selftest | `tests/test_cli.py` | 14 |
-| Server API / validation / path confinement / timeout | `tests/test_server.py` | 13 |
+| CLI argparse / exit codes / `--out` / selftest / `serve` bind+URL / `--open` / `--desktop` | `tests/test_cli.py` | 16 |
+| Server API / validation / path confinement / timeout / `/healthz` / pick-folder | `tests/test_server.py` | 18 |
+| Desktop launcher (free port, healthz wait, deep link, browser fallback) | `tests/test_desktop.py` | 6 |
 | Scaffold contract sanity | `tests/test_scaffold.py` | 6 |
-| **Total** | `pytest -q` | **139 passed** |
+| **Total** | `pytest -q` | **151 passed** |
 
-**Gaps to close with manual/exploratory testing (this plan):** all UI states (§4.3), real-network behaviour (§6.2), `serve` process & bind scope (CLI-40…43), bootstrap on real machines (SKILL-11…13), hook behaviour end-to-end in a live agent session (§5.3), skill trigger judgement (§5.1), packaged-wheel checks (PKG-03).
+**Gaps to close with manual/exploratory testing (this plan):** all UI states (§4.3), real-network behaviour (§6.2), `serve` real browser/window & bind scope (CLI-40…45), the packaged desktop app on real OSes (§4.4 DESK-01…13), bootstrap on real machines (SKILL-11…13), hook behaviour end-to-end in a live agent session (§5.3), skill trigger judgement (§5.1), packaged-wheel checks (PKG-03, PKG-07/08).
 
 ---
 
@@ -281,10 +310,11 @@ Per commit / PR:
 pip install -e ".[dev]"
 ruff check .
 mypy src            # advisory
-pytest -q           # must stay green (139+)
+pytest -q           # must stay green (151+)
 security-preview selftest
+python scripts/build_desktop.py check   # desktop launcher smoke (no network)
 ```
-Per release (`v0.x.y`): the full manual pass of §3.5, §4.3, §5, §6.2, §6.5 on the OS matrix; diff the `--format html` output against the `ReportScreen` / `ReportPrint` artboards.
+Per release (`v0.x.y`): the full manual pass of §3.5, §4.3, §4.4, §5, §6.2, §6.5 on the OS matrix; diff the `--format html` output against the `ReportScreen` / `ReportPrint` artboards. The desktop installers are built and smoke-tested by `.github/workflows/desktop-release.yml` on the `v*` tag.
 
 ---
 
