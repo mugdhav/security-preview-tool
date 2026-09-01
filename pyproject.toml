@@ -32,3 +32,5 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 src = ["src", "tests"]
+# Deliberately insecure/idiomatic sample code used as SAST detection fixtures.
+extend-exclude = ["tests/fixtures"]
