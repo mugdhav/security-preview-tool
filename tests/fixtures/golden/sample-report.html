@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="security-preview 0.1.0">
+<title>security-preview report — /work/payments-api</title>
+<style>
+  :root{
+    --ground:#faf9f6; --card:#ffffff; --ink:#131314; --subdued:#6b7280;
+    --border:#e5e7eb; --border-strong:#d5d8dd; --accent:#d97757; --accent-hover:#cc6944;
+    --sca:#6941c6; --ok:#067647; --ok-tint:#ecfdf3; --warn:#b54708; --warn-tint:#fffaeb;
+    --crit:#912018; --high:#d92d20; --med:#b45309; --low:#175cd3; --info:#667085;
+    --crit-tint:#fef3f2; --high-tint:#fff4ed;
+    --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#131314; --card:#1c1c1e; --ink:#f2f2f0; --subdued:#9aa0a6;
+      --border:#2e2e30; --border-strong:#3a3a3c;
+    }
+  }
+  *{box-sizing:border-box}
+  html{background:var(--ground)}
+  body{margin:0;font-family:var(--sans);background:var(--ground);color:var(--ink);
+    font-size:14px;line-height:1.6;padding:40px 0}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{color:var(--accent-hover);text-decoration:underline}
+  .skip{position:absolute;left:-9999px}
+  .skip:focus{left:16px;top:16px;background:var(--card);border:1px solid var(--border);
+    padding:8px 12px;border-radius:6px;z-index:10}
+  .page{max-width:820px;width:calc(100% - 32px);margin:0 auto;background:var(--card);
+    border:1px solid var(--border);border-radius:6px;padding:44px 52px}
+  .mono{font-family:var(--mono)}
+  h1{font-size:26px;font-weight:650;margin:0;letter-spacing:-.01em}
+  .head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .ver{font-family:var(--mono);font-size:12px;color:var(--subdued)}
+  .kv{font-size:12px;color:var(--subdued);margin-top:8px;font-family:var(--mono)}
+  h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--subdued);margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+  .toc{font-size:13px;display:flex;flex-direction:column;gap:5px;list-style:none;padding:0;margin:0}
+  .sumtable{border-collapse:collapse;width:100%;font-size:13px}
+  .sumtable td{padding:7px 10px;border-bottom:1px solid var(--border)}
+  .sumtable td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff}
+  .banner{display:flex;gap:10px;align-items:flex-start;border-radius:8px;padding:12px 15px;
+    font-size:13px;border:1px solid;margin:14px 0;background:var(--warn-tint);border-color:#fde3b3}
+  .banner .mark{color:var(--warn);font-weight:700;flex:none}
+  .ok-banner{background:var(--ok-tint);border-color:#c9ecd8}
+  .ok-banner .mark{color:var(--ok)}
+  details.finding{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;
+    overflow:hidden;border-left:3px solid var(--sev)}
+  details.finding>summary{display:flex;align-items:center;gap:11px;padding:12px 15px;
+    cursor:pointer;list-style:none}
+  details.finding>summary::-webkit-details-marker{display:none}
+  .caret{color:var(--subdued);flex:none;transition:none}
+  details[open] .caret{transform:rotate(90deg)}
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:999px;
+    font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;flex:none}
+  .ftitle{font-weight:650;font-size:14px}
+  .tag{display:inline-flex;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;
+    background:#f2f4f7;color:#475467;border:1px solid var(--border)}
+  .loc{font-family:var(--mono);font-size:12px;color:var(--subdued)}
+  .grow{flex:1}
+  .fbody{padding:0 15px 16px;border-top:1px solid var(--border)}
+  .snip{font-family:var(--mono);font-size:12px;line-height:1.7;background:#1c1c1e;color:#d4d4d6;
+    border-radius:6px;padding:11px 0;margin:12px 0;overflow-x:auto}
+  .snip .ln{display:flex;gap:12px;padding:0 14px;white-space:pre}
+  .snip .num{color:#6b6b70;width:30px;text-align:right;flex:none;user-select:none}
+  .snip .hit{background:rgba(217,45,32,.18);box-shadow:inset 3px 0 0 var(--high)}
+  .sub{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--subdued);margin:14px 0 6px}
+  .rem{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:7px}
+  .rem .h{font-size:10px;font-weight:700;text-transform:uppercase;padding:5px 10px}
+  .rem .h.bad{background:var(--crit-tint);color:var(--crit)}
+  .rem .h.good{background:var(--ok-tint);color:var(--ok)}
+  .rem .c{font-family:var(--mono);font-size:12px;padding:9px 10px;white-space:pre-wrap;
+    word-break:break-word}
+  .cve{display:inline-flex;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;
+    font-family:var(--mono);background:var(--card);border:1px solid var(--border-strong);
+    color:#344054;margin-right:6px}
+  table.deps{border-collapse:collapse;width:100%;font-size:12.5px}
+  table.deps th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--subdued);padding:8px 10px;border-bottom:1px solid var(--border)}
+  table.deps td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  .errlist{font-size:13px;padding-left:18px;margin:0}
+  .errlist li{margin-bottom:5px}
+  .footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--border);
+    font-size:12px;color:var(--subdued)}
+  .cmd{font-family:var(--mono);font-size:12px;background:#f6f5f2;border:1px solid var(--border);
+    border-radius:6px;padding:9px 12px;margin-top:8px;color:#3a3a3c}
+  @media (prefers-color-scheme: dark){ .cmd{background:#232325;color:#c9c9cc} .tag,.cve{color:#c9c9cc} }
+  @media print{
+    body{background:#fff;color:#111;padding:0;font-size:12px}
+    .page{max-width:none;width:auto;border:none;border-radius:0;padding:24px 32px;background:#fff}
+    a{color:#111;text-decoration:underline}
+    a::after{content:" (" attr(href) ")";font-family:var(--mono);font-size:10px;color:#333}
+    .toc a::after{content:""}
+    .skip,.caret{display:none}
+    h2{border-color:#000;color:#000}
+    details.finding{border:1px solid #000;border-left:1px solid #000;break-inside:avoid}
+    details.finding>summary{list-style:none}
+    details.finding:not([open]) .fbody{display:block}
+    .fbody{display:block !important}
+    .snip{background:#fafafa;color:#111;border:1px solid #bdbdbd}
+    .snip .num{color:#999}
+    .snip .hit{background:#ececec;font-weight:700;box-shadow:inset 3px 0 0 #000}
+    .badge{color:#000 !important;background:#fff !important;border:1.5px solid #000}
+    .pill{color:#000 !important;background:#fff !important;border:1.5px solid #000}
+    .badge.crit,.pill.crit{background:#000 !important;color:#fff !important}
+    .badge.high,.pill.high{border-style:double;border-width:3px}
+    .badge.med,.pill.med{background:#e6e6e6 !important}
+    .badge.info,.pill.info{border-style:dotted}
+    .rem .h.bad::before{content:"\2717  "}
+    .rem .h.good::before{content:"\2713  "}
+    .rem .h{background:#fff !important;color:#000 !important;border-bottom:1px solid #bdbdbd}
+    .cmd{background:#f4f4f4;color:#111;border-color:#bdbdbd}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#summary">Skip to report</a>
+<div class="page">
+  <header>
+    <div class="head">
+      <h1>security-preview report</h1>
+      <span class="ver">v0.1.0</span>
+    </div>
+    <div class="kv">target &nbsp; /work/payments-api<br>scanned &nbsp; 2026-09-01 14:22 UTC | 3.1s | deterministic, non-LLM</div>
+  </header>
+
+  <nav aria-label="Contents">
+    <h2>Contents</h2>
+    <ul class="toc">
+      <li><a href="#summary">1 &nbsp; Summary</a></li>
+      <li><a href="#code">2 &nbsp; Code findings (6)</a></li>
+      <li><a href="#deps">3 &nbsp; Vulnerable dependencies (3)</a></li>
+      <li><a href="#errors">4 &nbsp; Skipped / errors (3)</a></li>
+    </ul>
+  </nav>
+
+  <main>
+  <section aria-labelledby="summary">
+  <h2 id="summary">1 &nbsp; Summary</h2>
+  <table class="sumtable">
+    <tr>
+      <td><span class="pill critical" style="background:#912018">Critical</span></td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td><span class="pill high" style="background:#d92d20">High</span></td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td><span class="pill medium" style="background:#b45309">Medium</span></td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td><span class="pill low" style="background:#175cd3">Low</span></td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td><span class="pill info" style="background:#667085">Info</span></td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td><span class="pill" style="background:var(--sca)">Vulnerable dependencies</span></td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td style="color:var(--subdued)">Files scanned / dependencies checked</td>
+      <td>342 / 47</td>
+    </tr>
+  </table>
+  <div class="banner" role="status">
+    <span class="mark" aria-hidden="true">&#9650;</span>
+    <div><strong>PARTIAL &mdash; 3 issue(s) recorded during the scan.</strong>
+      All code findings and dependency matches below are complete; some illustrative data
+      may be missing. Details in section&nbsp;4.</div>
+  </div>
+  </section>
+
+  <section aria-labelledby="code">
+  <h2 id="code">2 &nbsp; Code findings</h2>
+  <details class="finding critical" style="--sev:#912018" open>
+    <summary>
+      <svg class="caret" width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="badge critical" style="background:#912018">Critical</span>
+      <span class="ftitle">SQL Injection</span>
+<a class="mono" style="font-size:11px" href="https://cwe.mitre.org/data/definitions/89.html">CWE-89</a>      <span class="tag">Injection</span>
+      <span class="grow"></span>
+      <span class="loc">api/reports.py:142 &middot; HIGH confidence</span>
+    </summary>
+    <div class="fbody">
+      <div class="snip" aria-label="code snippet">
+        <div class="ln"><span class="num">141</span><span>owner = request.args[&#34;user&#34;]</span></div>
+        <div class="ln hit"><span class="num">142</span><span>cur.execute(f&#34;SELECT * FROM reports WHERE owner = &#39;{owner}&#39;&#34;)</span></div>
+        <div class="ln"><span class="num">143</span><span>rows = cur.fetchall()</span></div>
+      </div>
+      <div class="sub">What&#39;s wrong</div>
+      <p style="margin:0">Request-controlled `owner` is interpolated into the SQL string.</p>
+      <div class="sub">Remediation</div>
+      <div class="rem"><div class="h bad">Vulnerable</div><div class="c">cur.execute(f&#34;... owner = &#39;{owner}&#39;&#34;)</div></div>
+      <div class="rem"><div class="h good">Secure</div><div class="c">cur.execute(&#34;... owner = %s&#34;, (owner,))</div></div>
+      <div class="sub">Illustrative CVEs</div>
+      <div><a class="cve" href="https://nvd.nist.gov/vuln/detail/CVE-2019-19844">CVE-2019-19844</a><a class="cve" href="https://nvd.nist.gov/vuln/detail/CVE-2021-23336">CVE-2021-23336</a></div>
+    </div>
+  </details>
+  <details class="finding critical" style="--sev:#912018">
+    <summary>
+      <svg class="caret" width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="badge critical" style="background:#912018">Critical</span>
+      <span class="ftitle">Command Injection</span>
+<a class="mono" style="font-size:11px" href="https://cwe.mitre.org/data/definitions/78.html">CWE-78</a>      <span class="tag">Injection</span>
+      <span class="grow"></span>
+      <span class="loc">worker/convert.js:88 &middot; MEDIUM confidence</span>
+    </summary>
+    <div class="fbody">
+      <div class="snip" aria-label="code snippet">
+        <div class="ln hit"><span class="num">88</span><span>exec(&#34;ffmpeg -i &#34; + src + &#34; out.mp4&#34;)</span></div>
+      </div>
+      <div class="sub">What&#39;s wrong</div>
+      <p style="margin:0">Untrusted `src` is concatenated into a shell command.</p>
+      <div class="sub">Remediation</div>
+      <div class="rem"><div class="h bad">Vulnerable</div><div class="c">exec(&#34;ffmpeg -i &#34; + src + &#34; out.mp4&#34;)</div></div>
+      <div class="rem"><div class="h good">Secure</div><div class="c">execFile(&#34;ffmpeg&#34;, [&#34;-i&#34;, src, &#34;out.mp4&#34;])</div></div>
+    </div>
+  </details>
+  <details class="finding high" style="--sev:#d92d20">
+    <summary>
+      <svg class="caret" width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="badge high" style="background:#d92d20">High</span>
+      <span class="ftitle">Hardcoded Credentials</span>
+<a class="mono" style="font-size:11px" href="https://cwe.mitre.org/data/definitions/798.html">CWE-798</a>      <span class="tag">Secrets</span>
+      <span class="grow"></span>
+      <span class="loc">config/settings.py:12 &middot; HIGH confidence</span>
+    </summary>
+    <div class="fbody">
+      <div class="snip" aria-label="code snippet">
+        <div class="ln hit"><span class="num">12</span><span>STRIPE_KEY = &#34;sk_live_abcd&#34; + &#34;••••&#34;</span></div>
+      </div>
+      <div class="sub">What&#39;s wrong</div>
+      <p style="margin:0">A live API key is committed to source control.</p>
+      <div class="sub">Remediation</div>
+      <div class="rem"><div class="h bad">Vulnerable</div><div class="c">STRIPE_KEY = &#34;sk_live_********&#34;</div></div>
+      <div class="rem"><div class="h good">Secure</div><div class="c">STRIPE_KEY = os.environ[&#34;STRIPE_KEY&#34;]</div></div>
+    </div>
+  </details>
+  <details class="finding medium" style="--sev:#b45309">
+    <summary>
+      <svg class="caret" width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="badge medium" style="background:#b45309">Medium</span>
+      <span class="ftitle">Weak Password Hashing</span>
+<a class="mono" style="font-size:11px" href="https://cwe.mitre.org/data/definitions/328.html">CWE-328</a>      <span class="tag">Crypto</span>
+      <span class="grow"></span>
+      <span class="loc">auth/users.py:57 &middot; MEDIUM confidence</span>
+    </summary>
+    <div class="fbody">
+      <div class="snip" aria-label="code snippet">
+        <div class="ln hit"><span class="num">57</span><span>digest = hashlib.md5(password.encode()).hexdigest()</span></div>
+      </div>
+      <div class="sub">What&#39;s wrong</div>
+      <p style="margin:0">MD5 is unsuitable for password storage.</p>
+      <div class="sub">Remediation</div>
+      <div class="rem"><div class="h bad">Vulnerable</div><div class="c">hashlib.md5(password.encode()).hexdigest()</div></div>
+      <div class="rem"><div class="h good">Secure</div><div class="c">bcrypt.hashpw(password.encode(), bcrypt.gensalt())</div></div>
+    </div>
+  </details>
+  <details class="finding low" style="--sev:#175cd3">
+    <summary>
+      <svg class="caret" width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="badge low" style="background:#175cd3">Low</span>
+      <span class="ftitle">Open Redirect</span>
+      <span class="tag">Config</span>
+      <span class="grow"></span>
+      <span class="loc">web/views.py:203 &middot; LOW confidence</span>
+    </summary>
+    <div class="fbody">
+      <div class="snip" aria-label="code snippet">
+        <div class="ln hit"><span class="num">203</span><span>return redirect(request.args[&#34;next&#34;])</span></div>
+      </div>
+      <div class="sub">What&#39;s wrong</div>
+      <p style="margin:0">User-supplied `next` is used as a redirect target unchecked.</p>
+      <div class="sub">Remediation</div>
+      <div class="rem"><div class="h bad">Vulnerable</div><div class="c">return redirect(request.args[&#34;next&#34;])</div></div>
+      <div class="rem"><div class="h good">Secure</div><div class="c">return redirect(url_for(safe_endpoint(request.args)))</div></div>
+    </div>
+  </details>
+  <details class="finding info" style="--sev:#667085">
+    <summary>
+      <svg class="caret" width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="badge info" style="background:#667085">Info</span>
+      <span class="ftitle">Security TODO Marker</span>
+      <span class="tag">Hygiene</span>
+      <span class="grow"></span>
+      <span class="loc">core/auth.py:9 &middot; LOW confidence</span>
+    </summary>
+    <div class="fbody">
+      <div class="snip" aria-label="code snippet">
+        <div class="ln hit"><span class="num">9</span><span># TODO: security - re-enable CSRF checks before launch</span></div>
+      </div>
+      <div class="sub">What&#39;s wrong</div>
+      <p style="margin:0">A security-relevant TODO remains in the codebase.</p>
+      <div class="sub">Remediation</div>
+      <div class="rem"><div class="h bad">Vulnerable</div><div class="c"># TODO: security - re-enable CSRF checks</div></div>
+      <div class="rem"><div class="h good">Secure</div><div class="c">Track the TODO in an issue and enable CSRF protection.</div></div>
+    </div>
+  </details>
+  </section>
+
+  <section aria-labelledby="deps">
+  <h2 id="deps">3 &nbsp; Vulnerable dependencies</h2>
+  <table class="deps">
+    <thead><tr><th>Package</th><th>Advisory</th><th>Severity</th><th>Fixed in</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="mono">lodash 4.17.11</td>
+        <td><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-10744">CVE-2019-10744</a> &middot; <a href="https://github.com/advisories/GHSA-jf85-cpcp-j695">GHSA-jf85-cpcp-j695</a></td>
+        <td><span class="pill critical" style="background:#912018">Critical</span></td>
+        <td class="mono">4.17.12</td>
+        <td class="mono">package-lock.json</td>
+      </tr>
+      <tr>
+        <td class="mono">pyyaml 5.1</td>
+        <td><a href="https://nvd.nist.gov/vuln/detail/CVE-2020-1747">CVE-2020-1747</a></td>
+        <td><span class="pill critical" style="background:#912018">Critical</span></td>
+        <td class="mono">5.3.1</td>
+        <td class="mono">requirements.txt</td>
+      </tr>
+      <tr>
+        <td class="mono">requests 2.19.1</td>
+        <td><a href="https://osv.dev/vulnerability/PYSEC-2018-28">PYSEC-2018-28</a></td>
+        <td><span class="pill high" style="background:#d92d20">High</span></td>
+        <td class="mono">—</td>
+        <td class="mono">requirements.txt</td>
+      </tr>
+    </tbody>
+  </table>
+  </section>
+
+  <section aria-labelledby="errors">
+  <h2 id="errors">4 &nbsp; Skipped / errors</h2>
+  <ul class="errlist">
+    <li><strong>walk</strong> &mdash; <span class="mono">assets/vendor.min.js</span>: exceeded the 2 MB size cap; file skipped</li>
+    <li><strong>enrich</strong> &mdash; <span class="mono">services.nvd.nist.gov</span>: connection timeout after 3 retries; 12 of 40 CWE lookups failed</li>
+    <li><strong>sca</strong> &mdash; <span class="mono">pom.xml</span>: malformed XML at line 44; Java dependencies not checked</li>
+  </ul>
+  </section>
+  </main>
+
+  <footer class="footer">
+    Generated by security-preview v0.1.0 &mdash; a deterministic, non-LLM static
+    scan. Findings are pattern- and dependency-based; treat them as leads, not proof. Re-run:
+    <div class="cmd">security-preview scan &#34;/work/payments-api&#34; --format html</div>
+  </footer>
+</div>
+</body>
+</html>
