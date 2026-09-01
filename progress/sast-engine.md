@@ -70,4 +70,4 @@ None — stdlib only (`os`, `re`, `pathlib`).
 - `RULES_BY_EXT` (ext → list[Rule]) is built once at import for the scan loop.
 - Masking only rewrites quoted RHS of `=` / `:` assignments; it is intentionally
   conservative so it never corrupts non-secret snippets.
-- No `git push` attempted yet at time of writing — see final report.
+- Pushed to `origin/foundation/sast-engine` successfully.
