@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      --ground:#faf9f6; --card:#ffffff; --ink:#131314; --subdued:#6b7280;
+      --border:#e5e7eb; --border-strong:#d5d8dd; --accent:#d97757; --accent-hover:#cc6944;
+      --sca:#6941c6; --ok:#067647; --ok-tint:#ecfdf3; --warn:#b54708; --warn-tint:#fffaeb;
+      --crit:#912018; --high:#d92d20; --med:#b45309; --low:#175cd3; --info:#667085;
+      --crit-tint:#fef3f2; --high-tint:#fff4ed;
+      --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:#eeece8;color:var(--ink);font-size:14px;line-height:1.6;width:980px;padding:40px 0}
+    a{color:var(--accent);text-decoration:none} a:hover{color:var(--accent-hover);text-decoration:underline}
+    .page{width:820px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:44px 52px}
+    .mono{font-family:var(--mono)}
+    h1{font-size:26px;font-weight:650;margin:0;letter-spacing:-.01em}
+    .kv{font-size:12px;color:var(--subdued);margin-top:8px;font-family:var(--mono)}
+    h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--subdued);margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+    .toc{font-size:13px;display:flex;flex-direction:column;gap:5px}
+    .sumtable{border-collapse:collapse;width:100%;font-size:13px}
+    .sumtable td{padding:7px 10px;border-bottom:1px solid var(--border)}
+    .sumtable td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff}
+    .banner{display:flex;gap:10px;align-items:flex-start;border-radius:8px;padding:12px 15px;font-size:13px;border:1px solid;margin:14px 0}
+    .finding{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden}
+    .fhead{display:flex;align-items:center;gap:11px;padding:12px 15px}
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px 3px 6px;border-radius:999px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;flex:none}
+    .tag{display:inline-flex;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;background:#f2f4f7;color:#475467;border:1px solid var(--border)}
+    .loc{font-family:var(--mono);font-size:12px;color:var(--subdued)}
+    .fbody{padding:0 15px 16px;border-top:1px solid var(--border)}
+    .snip{font-family:var(--mono);font-size:12px;line-height:1.7;background:#1c1c1e;color:#d4d4d6;border-radius:6px;padding:11px 0;margin:12px 0;overflow:hidden}
+    .snip .ln{display:flex;gap:12px;padding:0 14px}.snip .num{color:#6b6b70;width:26px;text-align:right;flex:none}
+    .snip .hit{background:rgba(217,45,32,.18);box-shadow:inset 3px 0 0 var(--high)}
+    .sub{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--subdued);margin:14px 0 6px}
+    .rem{border:1px solid;border-radius:6px;overflow:hidden;margin-bottom:7px}
+    .rem .h{font-size:10px;font-weight:700;text-transform:uppercase;padding:5px 10px}
+    .rem .c{font-family:var(--mono);font-size:12px;padding:9px 10px;color:#3a3a3c}
+    .cve{display:inline-flex;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;font-family:var(--mono);background:#fff;border:1px solid var(--border-strong);color:#344054;margin-right:6px}
+    .collapsed{display:flex;align-items:center;gap:11px;padding:11px 15px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+    .caret{color:var(--subdued);flex:none}
+    table.deps{border-collapse:collapse;width:100%;font-size:12.5px}
+    table.deps th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--subdued);padding:8px 10px;border-bottom:1px solid var(--border)}
+    table.deps td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+    .errlist{font-size:13px;padding-left:18px;margin:0}
+    .errlist li{margin-bottom:5px}
+    .footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--subdued)}
+    .cmd{font-family:var(--mono);font-size:12px;background:#f6f5f2;border:1px solid var(--border);border-radius:6px;padding:9px 12px;margin-top:8px;color:#3a3a3c}
+  </style>
+</helmet>
+
+<div class="page">
+  <div style="display:flex;align-items:baseline;gap:10px">
+    <h1>security-preview report</h1>
+    <span class="mono" style="font-size:12px;color:var(--subdued)">v0.1.0</span>
+  </div>
+  <div class="kv">target &nbsp; C:\work\payments-api<br>scanned &nbsp; 2026-09-01 14:22 UTC &middot; 3.1s &middot; deterministic, non-LLM</div>
+
+  <h2>Contents</h2>
+  <nav class="toc">
+    <a href="#summary">1 &nbsp; Summary</a>
+    <a href="#code">2 &nbsp; Code findings (8)</a>
+    <a href="#deps">3 &nbsp; Vulnerable dependencies (3)</a>
+    <a href="#errors">4 &nbsp; Skipped / errors</a>
+  </nav>
+
+  <h2 id="summary">1 &nbsp; Summary</h2>
+  <table class="sumtable">
+    <tr><td><span class="pill" style="background:var(--crit)">Critical</span></td><td>2</td></tr>
+    <tr><td><span class="pill" style="background:var(--high)">High</span></td><td>2</td></tr>
+    <tr><td><span class="pill" style="background:var(--med)">Medium</span></td><td>2</td></tr>
+    <tr><td><span class="pill" style="background:var(--low)">Low</span></td><td>1</td></tr>
+    <tr><td><span class="pill" style="background:var(--info)">Info</span></td><td>1</td></tr>
+    <tr><td><span class="pill" style="background:var(--sca)">Vulnerable dependencies</span></td><td>3</td></tr>
+    <tr><td style="color:var(--subdued)">Files scanned / dependencies checked</td><td>342 / 47</td></tr>
+  </table>
+  <div class="banner" style="background:var(--warn-tint);border-color:#fde3b3">
+    <span style="color:var(--warn);font-weight:700;flex:none">&#9650;</span>
+    <div><strong>PARTIAL &mdash; 12 of 40 CVE enrichment lookups failed.</strong> All code findings and dependency matches below are complete; only some illustrative CVE links are missing. Details in section&nbsp;4.</div>
+  </div>
+
+  <h2 id="code">2 &nbsp; Code findings</h2>
+
+  <div class="finding">
+    <div class="fhead" style="border-left:3px solid var(--crit)">
+      <span class="badge" style="background:var(--crit)">
+        <svg width="12" height="12" viewBox="0 0 20 20"><path d="M6.6 2h6.8L18 6.6v6.8L13.4 18H6.6L2 13.4V6.6L6.6 2Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="#fff"/></svg>Critical</span>
+      <strong style="font-size:15px">SQL Injection</strong>
+      <a href="#" class="mono" style="font-size:11px">CWE-89</a><span class="tag">Injection</span>
+      <span style="flex:1"></span><span class="loc">api/reports.py:142 &middot; HIGH confidence</span>
+    </div>
+    <div class="fbody">
+      <div class="snip">
+        <div class="ln"><span class="num">141</span><span>owner = request.args["user"]</span></div>
+        <div class="ln hit"><span class="num">142</span><span>cur.execute(f"SELECT * FROM reports WHERE owner = '{owner}'")</span></div>
+        <div class="ln"><span class="num">143</span><span>rows = cur.fetchall()</span></div>
+      </div>
+      <div class="sub">What&#39;s wrong</div>
+      <p style="margin:0">Request-controlled <span class="mono">owner</span> is interpolated into the SQL string, so an attacker can rewrite the query and read or modify any row.</p>
+      <div class="sub">Remediation</div>
+      <div class="rem" style="border-color:#fdd6d3"><div class="h" style="background:var(--crit-tint);color:var(--crit)">Vulnerable</div><div class="c">cur.execute(f"... owner = '{owner}'")</div></div>
+      <div class="rem" style="border-color:#c9ecd8"><div class="h" style="background:var(--ok-tint);color:var(--ok)">Secure</div><div class="c">cur.execute("... owner = %s", (owner,))</div></div>
+      <div class="sub">Illustrative CVEs</div>
+      <div><a class="cve" href="#">CVE-2019-19844</a><a class="cve" href="#">CVE-2021-23336</a></div>
+    </div>
+  </div>
+
+  <div class="collapsed" style="border-left:3px solid var(--crit)">
+    <svg class="caret" width="15" height="15" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="badge" style="background:var(--crit)">Critical</span><strong style="font-size:14px">Command Injection</strong>
+    <a href="#" class="mono" style="font-size:11px">CWE-78</a><span class="tag">Injection</span>
+    <span style="flex:1"></span><span class="loc">worker/convert.py:88</span>
+  </div>
+  <div class="collapsed" style="border-left:3px solid var(--high)">
+    <svg class="caret" width="15" height="15" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="badge" style="background:var(--high)">High</span><strong style="font-size:14px">Hardcoded Credentials</strong>
+    <a href="#" class="mono" style="font-size:11px">CWE-798</a><span class="tag">Secrets</span>
+    <span style="flex:1"></span><span class="loc">config/settings.py:12</span>
+  </div>
+  <div class="collapsed" style="border-left:3px solid var(--high)">
+    <svg class="caret" width="15" height="15" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="badge" style="background:var(--high)">High</span><strong style="font-size:14px">Weak Password Hashing</strong>
+    <a href="#" class="mono" style="font-size:11px">CWE-328</a><span class="tag">Crypto</span>
+    <span style="flex:1"></span><span class="loc">auth/users.py:57</span>
+  </div>
+  <p style="font-size:12px;color:var(--subdued);margin:6px 0 0">+ 4 more (2 Medium, 1 Low, 1 Info) &mdash; open the file to expand every finding.</p>
+
+  <h2 id="deps">3 &nbsp; Vulnerable dependencies</h2>
+  <table class="deps">
+    <thead><tr><th>Package</th><th>Advisory</th><th>Severity</th><th>Fixed in</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">lodash 4.17.11</td><td><a href="#">CVE-2019-10744</a> &middot; <a href="#">GHSA-jf85</a></td><td><span class="pill" style="background:var(--crit)">Critical</span></td><td class="mono">4.17.12</td><td class="mono">package-lock.json</td></tr>
+      <tr><td class="mono">pyyaml 5.1</td><td><a href="#">CVE-2020-1747</a></td><td><span class="pill" style="background:var(--crit)">Critical</span></td><td class="mono">5.3.1</td><td class="mono">requirements.txt</td></tr>
+      <tr><td class="mono">requests 2.19.1</td><td><a href="#">CVE-2018-18074</a></td><td><span class="pill" style="background:var(--high)">High</span></td><td class="mono">2.20.0</td><td class="mono">requirements.txt</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="errors">4 &nbsp; Skipped / errors</h2>
+  <ul class="errlist">
+    <li><strong>CVE enrichment</strong> &mdash; 12 of 40 CWE lookups failed: <span class="mono">services.nvd.nist.gov</span> connection timeout after 3 retries.</li>
+    <li><strong>3 files skipped</strong> &mdash; exceeded the 2&nbsp;MB size cap: <span class="mono">assets/vendor.min.js</span>, <span class="mono">static/bundle.js</span>, <span class="mono">docs/dump.sql</span>.</li>
+    <li><strong>1 manifest unparsed</strong> &mdash; <span class="mono">pom.xml</span>: malformed XML at line 44; Java dependencies not checked.</li>
+  </ul>
+
+  <div class="footer">
+    Generated by security-preview v0.1.0 &mdash; a deterministic, non-LLM static scan. Findings are pattern- and dependency-based; treat them as leads, not proof. Re-run:
+    <div class="cmd">security-preview scan "C:\work\payments-api" --format html</div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      --ink:#111; --line:#bdbdbd; --mut:#555;
+      --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+      --serif:Georgia,"Times New Roman",serif;
+      --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:#d9d9d9;color:var(--ink);font-size:12px;line-height:1.55;width:816px;padding:28px 0}
+    .sheet{width:816px;background:#fff;padding:64px 72px;border:1px solid #cfcfcf}
+    .mono{font-family:var(--mono)}
+    .brand{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:8px}
+    h1{font-size:19px;font-weight:700;margin:0;letter-spacing:.01em}
+    .kv{font-family:var(--mono);font-size:10.5px;color:var(--mut);margin-top:6px}
+    h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin:26px 0 10px;border-bottom:1px solid var(--line);padding-bottom:4px}
+    .note-print{border:1px dashed #999;background:#f4f4f4;font-family:var(--mono);font-size:9.5px;color:#666;text-align:center;padding:3px;margin:22px 0;letter-spacing:.08em}
+    table{border-collapse:collapse;width:100%;font-size:11px}
+    th{text-align:left;border-bottom:1.5px solid var(--ink);padding:5px 8px;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em}
+    td{border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top}
+    .sev{display:inline-block;border:1.5px solid var(--ink);padding:0 6px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+    .sev.crit{background:var(--ink);color:#fff}
+    .sev.high{background:#000;color:#fff;border-style:double;border-width:3px}
+    .sev.med{background:#e6e6e6}
+    .sev.low{background:#fff}
+    .sev.info{background:#fff;border-style:dotted}
+    .finding{border:1px solid var(--ink);margin-bottom:12px;padding:10px 12px;break-inside:avoid}
+    .fh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .fh strong{font-size:12.5px}
+    .loc{font-family:var(--mono);font-size:10px;color:var(--mut)}
+    .snip{font-family:var(--mono);font-size:10px;line-height:1.6;border:1px solid var(--line);background:#fafafa;padding:8px 0;margin:8px 0}
+    .snip .ln{display:flex;gap:10px;padding:0 10px}
+    .snip .num{color:#999;width:24px;text-align:right;flex:none}
+    .snip .hit{background:#ececec;font-weight:700;box-shadow:inset 3px 0 0 var(--ink)}
+    .sub{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:10px 0 4px}
+    .rem{border:1px solid var(--line);margin-bottom:5px}
+    .rem .h{font-size:9px;font-weight:700;text-transform:uppercase;padding:3px 8px;border-bottom:1px solid var(--line);letter-spacing:.05em}
+    .rem .h.bad::before{content:"\2717  "}
+    .rem .h.good::before{content:"\2713  "}
+    .rem .c{font-family:var(--mono);font-size:10px;padding:6px 8px}
+    .url{font-family:var(--mono);font-size:9.5px;color:#333;word-break:break-all}
+    ul{margin:0;padding-left:16px}
+    li{margin-bottom:4px}
+    .foot{margin-top:22px;border-top:1px solid var(--line);padding-top:10px;font-size:10px;color:var(--mut)}
+  </style>
+</helmet>
+
+<div class="sheet">
+  <div class="brand">
+    <h1>security-preview report</h1>
+    <span class="mono" style="font-size:10px">v0.1.0 &middot; page 1 / 4</span>
+  </div>
+  <div class="kv">target C:\work\payments-api &nbsp;|&nbsp; 2026-09-01 14:22 UTC &nbsp;|&nbsp; 3.1s &nbsp;|&nbsp; deterministic, non-LLM</div>
+
+  <div class="note-print">PRINT STYLESHEET &mdash; grayscale-safe severity marks, all findings expanded, link targets shown in full, hard page breaks between sections</div>
+
+  <h2>1 &nbsp; Summary</h2>
+  <table>
+    <tr><th>Severity</th><th>Count</th><th>Severity</th><th>Count</th></tr>
+    <tr><td><span class="sev crit">Critical</span></td><td>2</td><td><span class="sev low">Low</span></td><td>1</td></tr>
+    <tr><td><span class="sev high">High</span></td><td>2</td><td><span class="sev info">Info</span></td><td>1</td></tr>
+    <tr><td><span class="sev med">Medium</span></td><td>2</td><td>Vulnerable dependencies</td><td>3</td></tr>
+    <tr><td>Files scanned</td><td>342</td><td>Dependencies checked</td><td>47</td></tr>
+  </table>
+  <p style="margin:10px 0 0"><strong>[ PARTIAL ]</strong> 12 of 40 CVE enrichment lookups failed &mdash; see section 4. All findings below are complete.</p>
+
+  <div class="note-print">&mdash; &mdash; &mdash;&nbsp;&nbsp; page break &nbsp;&nbsp;&mdash; &mdash; &mdash;</div>
+
+  <h2>2 &nbsp; Code findings</h2>
+
+  <div class="finding">
+    <div class="fh"><span class="sev crit">Critical</span><strong>SQL Injection</strong><span class="loc">CWE-89 &middot; Injection &middot; HIGH confidence</span></div>
+    <div class="loc" style="margin-top:3px">api/reports.py:142</div>
+    <div class="snip">
+      <div class="ln"><span class="num">141</span><span>owner = request.args["user"]</span></div>
+      <div class="ln hit"><span class="num">142</span><span>cur.execute(f"SELECT * FROM reports WHERE owner = '{owner}'")</span></div>
+      <div class="ln"><span class="num">143</span><span>rows = cur.fetchall()</span></div>
+    </div>
+    <div class="sub">What&#39;s wrong</div>
+    <p style="margin:0">Request-controlled <span class="mono">owner</span> is interpolated into the SQL string; an attacker can rewrite the query and read or modify any row.</p>
+    <div class="sub">Remediation</div>
+    <div class="rem"><div class="h bad">Vulnerable</div><div class="c">cur.execute(f"... owner = '{owner}'")</div></div>
+    <div class="rem"><div class="h good">Secure</div><div class="c">cur.execute("... owner = %s", (owner,))</div></div>
+    <div class="sub">Illustrative CVEs</div>
+    <div class="url">https://nvd.nist.gov/vuln/detail/CVE-2019-19844<br>https://nvd.nist.gov/vuln/detail/CVE-2021-23336</div>
+  </div>
+
+  <div class="finding">
+    <div class="fh"><span class="sev crit">Critical</span><strong>Command Injection</strong><span class="loc">CWE-78 &middot; Injection &middot; MEDIUM confidence</span></div>
+    <div class="loc" style="margin-top:3px">worker/convert.py:88</div>
+    <div class="snip">
+      <div class="ln hit"><span class="num">88</span><span>subprocess.run("ffmpeg -i " + src + " out.mp4", shell=True)</span></div>
+    </div>
+    <div class="sub">Remediation</div>
+    <div class="rem"><div class="h bad">Vulnerable</div><div class="c">subprocess.run("ffmpeg -i " + src + " out.mp4", shell=True)</div></div>
+    <div class="rem"><div class="h good">Secure</div><div class="c">subprocess.run(["ffmpeg","-i",src,"out.mp4"], shell=False)</div></div>
+  </div>
+
+  <div class="foot">&hellip; findings 3&ndash;8 continue on pages 2&ndash;3 &middot; dependencies table on page 3 &middot; Skipped / errors on page 4 &middot; every <span class="mono">&lt;details&gt;</span> is forced open for print.</div>
+</div>
+</x-dc>
+</body>
+</html>

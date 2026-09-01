@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      --ground:#faf9f6; --card:#ffffff; --ink:#131314; --subdued:#6b7280;
+      --border:#e5e7eb; --border-strong:#d5d8dd; --accent:#d97757; --accent-hover:#cc6944;
+      --sca:#6941c6; --ok:#067647; --ok-tint:#ecfdf3;
+      --crit:#912018; --high:#d92d20; --med:#b45309; --low:#175cd3; --info:#667085;
+      --crit-tint:#fef3f2;
+      --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:var(--ground);color:var(--ink);font-size:14px;line-height:1.5;width:1440px;height:900px;overflow:hidden}
+    a{color:var(--accent);text-decoration:none} a:hover{color:var(--accent-hover)}
+    .mono{font-family:var(--mono)}
+    .topbar{height:46px;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid var(--border);background:var(--card)}
+    .wm{font-family:var(--mono);font-weight:700;font-size:13px}
+    .vtag{font-family:var(--mono);font-size:11px;color:var(--subdued);border:1px solid var(--border);border-radius:999px;padding:1px 7px}
+    .stagewrap{display:flex;height:calc(900px - 46px)}
+    .list{flex:1;padding:20px 24px;overflow:hidden;opacity:.45}
+    .grp{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--subdued);margin:4px 2px 8px}
+    .fr{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+    .fr.sel{opacity:1;border-color:var(--accent);box-shadow:0 0 0 2px rgba(217,119,87,.25)}
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px 3px 6px;border-radius:999px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;white-space:nowrap;flex:none}
+    .ttl{font-size:15px;font-weight:600}
+    .tag{display:inline-flex;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;background:#f2f4f7;color:#475467;border:1px solid var(--border)}
+    .loc{font-family:var(--mono);font-size:12px;color:var(--subdued)}
+    .pips{display:inline-flex;gap:2px}.pips i{width:4px;height:11px;border-radius:1px;display:block}
+    /* drawer */
+    .drawer{width:496px;flex:none;background:var(--card);border-left:1px solid var(--border);height:100%;overflow:auto;padding:20px 22px}
+    .dhead{display:flex;align-items:flex-start;gap:10px}
+    .x{margin-left:auto;color:var(--subdued);flex:none;cursor:pointer}
+    h1{font-size:19px;font-weight:600;margin:8px 0 0}
+    .metarow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0 16px;font-size:12px;color:var(--subdued)}
+    .snip{font-family:var(--mono);font-size:12px;line-height:1.7;background:#1c1c1e;color:#d4d4d6;border-radius:6px;padding:12px 0;overflow:hidden}
+    .snip .ln{display:flex;gap:12px;padding:0 14px}
+    .snip .num{color:#6b6b70;width:26px;text-align:right;flex:none}
+    .snip .hit{background:rgba(217,45,32,.18);box-shadow:inset 3px 0 0 var(--high)}
+    .sect{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--subdued);margin:18px 0 7px}
+    .rem{border:1px solid;border-radius:6px;overflow:hidden;margin-bottom:8px}
+    .rem .h{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px}
+    .rem .c{font-family:var(--mono);font-size:12px;padding:9px 10px;color:#3a3a3c}
+    .cve{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;font-family:var(--mono);background:#fff;border:1px solid var(--border-strong);color:#344054;margin-right:6px}
+    .copy{height:28px;display:inline-flex;align-items:center;gap:6px;padding:0 11px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid var(--border-strong);background:#fff;color:#475467}
+  </style>
+</helmet>
+
+<div class="topbar">
+  <span class="wm">security-preview</span><span class="vtag">v0.1.0</span>
+  <span style="flex:1"></span>
+  <span class="mono" style="font-size:11px;color:var(--subdued)">8 findings &middot; 3 vulnerable deps</span>
+</div>
+
+<div class="stagewrap">
+  <div class="list">
+    <div class="grp">Critical &middot; 2</div>
+    <div class="fr sel" style="border-left:3px solid var(--crit)">
+      <span class="badge" style="background:var(--crit)">Critical</span>
+      <span class="ttl">SQL Injection</span><span class="tag">Injection</span>
+      <span style="flex:1"></span><span class="loc">api/reports.py:142</span>
+    </div>
+    <div class="fr" style="border-left:3px solid var(--crit)">
+      <span class="badge" style="background:var(--crit)">Critical</span>
+      <span class="ttl">Command Injection</span><span class="tag">Injection</span>
+      <span style="flex:1"></span><span class="loc">worker/convert.py:88</span>
+    </div>
+    <div class="grp">High &middot; 2</div>
+    <div class="fr" style="border-left:3px solid var(--high)">
+      <span class="badge" style="background:var(--high)">High</span>
+      <span class="ttl">Hardcoded Credentials</span><span class="tag">Secrets</span>
+      <span style="flex:1"></span><span class="loc">config/settings.py:12</span>
+    </div>
+    <div class="fr" style="border-left:3px solid var(--high)">
+      <span class="badge" style="background:var(--high)">High</span>
+      <span class="ttl">Weak Password Hashing</span><span class="tag">Crypto</span>
+      <span style="flex:1"></span><span class="loc">auth/users.py:57</span>
+    </div>
+  </div>
+
+  <div class="drawer">
+    <div class="dhead">
+      <span class="badge" style="background:var(--crit);font-size:11px">
+        <svg width="13" height="13" viewBox="0 0 20 20"><path d="M6.6 2h6.8L18 6.6v6.8L13.4 18H6.6L2 13.4V6.6L6.6 2Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="#fff"/></svg>
+        Critical
+      </span>
+      <svg class="x" width="18" height="18" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+    </div>
+    <h1>SQL Injection</h1>
+    <div class="metarow">
+      <a href="#" class="mono">CWE-89</a><span>&middot;</span>
+      <span class="tag">Injection</span>
+      <span class="pips" title="HIGH confidence"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i></span>
+      <span style="font-weight:600;color:var(--ink)">HIGH confidence</span>
+      <span>&middot;</span><span class="mono">api/reports.py:142</span>
+    </div>
+
+    <div class="snip">
+      <div class="ln"><span class="num">141</span><span>owner = request.args["user"]</span></div>
+      <div class="ln hit"><span class="num">142</span><span>cur.execute(f"SELECT * FROM reports WHERE owner = '{owner}'")</span></div>
+      <div class="ln"><span class="num">143</span><span>rows = cur.fetchall()</span></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <span class="copy"><svg width="13" height="13" viewBox="0 0 20 20"><rect x="6" y="6" width="10" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 14V3.5A1.5 1.5 0 0 1 5.5 2H13" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Copy path</span>
+    </div>
+
+    <div class="sect">What&#39;s wrong</div>
+    <p style="margin:0">User-controlled <span class="mono">owner</span> is interpolated straight into the SQL string. An attacker can change <span class="mono">?user=</span> to read or modify any row in <span class="mono">reports</span>. The AST check confirmed the argument is an f-string built from a request value &mdash; confidence HIGH.</p>
+
+    <div class="sect">Remediation</div>
+    <div class="rem" style="border-color:#fdd6d3">
+      <div class="h" style="background:var(--crit-tint);color:var(--crit)">Vulnerable</div>
+      <div class="c">cur.execute(f"SELECT * FROM reports WHERE owner = '{owner}'")</div>
+    </div>
+    <div class="rem" style="border-color:#c9ecd8">
+      <div class="h" style="background:var(--ok-tint);color:var(--ok)">Secure &mdash; parameterised</div>
+      <div class="c">cur.execute("SELECT * FROM reports WHERE owner = %s", (owner,))</div>
+    </div>
+
+    <div class="sect">Illustrative CVEs <span style="text-transform:none;font-weight:400;color:var(--subdued)">&mdash; same CWE, not your code</span></div>
+    <div><a class="cve" href="#">CVE-2019-19844</a><a class="cve" href="#">CVE-2021-23336</a></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

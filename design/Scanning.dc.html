@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      --ground:#faf9f6; --card:#ffffff; --ink:#131314; --subdued:#6b7280;
+      --border:#e5e7eb; --border-strong:#d5d8dd; --accent:#d97757; --accent-hover:#cc6944;
+      --ok:#067647;
+      --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:var(--ground);color:var(--ink);font-size:14px;line-height:1.5;width:1440px;height:900px;overflow:hidden}
+    .mono{font-family:var(--mono)}
+    .topbar{height:46px;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid var(--border);background:var(--card)}
+    .wm{font-family:var(--mono);font-weight:700;font-size:13px}
+    .vtag{font-family:var(--mono);font-size:11px;color:var(--subdued);border:1px solid var(--border);border-radius:999px;padding:1px 7px}
+    .scanbar{height:60px;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid var(--border);background:var(--card);opacity:.55}
+    .path{flex:1;height:32px;display:flex;align-items:center;gap:8px;border:1px solid var(--border-strong);border-radius:6px;padding:0 10px;font-family:var(--mono);font-size:12px;color:#344054;background:#fff}
+    .ck{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#475467}
+    .box{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border-strong);display:inline-block}
+    .box.on{background:var(--ink);border-color:var(--ink)}
+    .sel{height:32px;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border-strong);border-radius:6px;padding:0 10px;font-size:12px;font-weight:600;color:#475467;background:#fff}
+    .btn{height:32px;display:inline-flex;align-items:center;gap:7px;padding:0 16px;border-radius:6px;font-size:13px;font-weight:650;border:1px solid var(--border-strong);background:#fff;color:var(--subdued)}
+    .stage{height:calc(900px - 46px - 60px);display:flex;align-items:center;justify-content:center;padding:0 40px}
+    .card{width:620px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:30px 32px}
+    h2{font-size:16px;font-weight:600;margin:0 0 4px}
+    .prog{height:8px;border-radius:999px;background:#eef0f2;overflow:hidden;margin:18px 0 8px}
+    .prog i{display:block;height:100%;width:62%;background:var(--accent);border-radius:999px}
+    .count{font-family:var(--mono);font-size:12px;color:var(--subdued)}
+    .stages{display:flex;align-items:center;gap:10px;margin:22px 0 6px;font-size:12px;font-weight:600}
+    .st{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;border:1px solid var(--border-strong);color:var(--subdued);background:#fff}
+    .st.done{color:var(--ok);border-color:#c9ecd8;background:#f2fbf6}
+    .st.now{color:var(--accent);border-color:#f3d3c6;background:#fdf3ef}
+    .arr{color:var(--border-strong)}
+    .cancel{display:flex;justify-content:flex-end;margin-top:22px}
+    .cbtn{height:32px;display:inline-flex;align-items:center;padding:0 14px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid var(--border-strong);background:#fff;color:#475467}
+  </style>
+</helmet>
+
+<div class="topbar">
+  <span class="wm">security-preview</span><span class="vtag">v0.1.0</span>
+  <span style="flex:1"></span>
+  <span class="mono" style="font-size:11px;color:var(--subdued)">scanning&hellip;</span>
+</div>
+
+<div class="scanbar">
+  <div class="path">C:\work\payments-api</div>
+  <label class="ck"><span class="box"></span>Offline</label>
+  <label class="ck"><span class="box on"></span>Scan dependencies</label>
+  <span class="sel">Min confidence: Medium</span>
+  <span class="btn">Scan</span>
+</div>
+
+<div class="stage">
+  <div class="card">
+    <h2>Scanning C:\work\payments-api</h2>
+    <div class="count">1,240 of ~2,000 files &middot; elapsed 2.4s</div>
+    <div class="prog"><i></i></div>
+    <div class="stages">
+      <span class="st done">
+        <svg width="13" height="13" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Discover files
+      </span>
+      <span class="arr">&rarr;</span>
+      <span class="st now">
+        <svg width="13" height="13" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="30 12"/></svg>
+        SAST rules
+      </span>
+      <span class="arr">&rarr;</span>
+      <span class="st">Dependency scan</span>
+      <span class="arr">&rarr;</span>
+      <span class="st">CVE enrichment</span>
+    </div>
+    <div class="cancel"><span class="cbtn">Cancel</span></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

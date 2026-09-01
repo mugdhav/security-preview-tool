@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      --ground:#faf9f6; --card:#ffffff; --ink:#131314; --subdued:#6b7280;
+      --border:#e5e7eb; --border-strong:#d5d8dd;
+      --accent:#d97757; --accent-hover:#cc6944;
+      --sca:#6941c6; --warn:#b54708; --warn-tint:#fffaeb;
+      --crit:#912018; --high:#d92d20; --med:#b45309; --low:#175cd3; --info:#667085;
+      --crit-tint:#fef3f2; --high-tint:#fff4ed; --med-tint:#fffaeb; --low-tint:#eff4ff; --info-tint:#f2f4f7;
+      --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:var(--ground);color:var(--ink);font-size:14px;line-height:1.5;width:1440px;height:900px;overflow:hidden}
+    a{color:var(--accent);text-decoration:none} a:hover{color:var(--accent-hover)}
+    .mono{font-family:var(--mono)}
+    .topbar{height:46px;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid var(--border);background:var(--card)}
+    .wm{font-family:var(--mono);font-weight:700;font-size:13px}
+    .vtag{font-family:var(--mono);font-size:11px;color:var(--subdued);border:1px solid var(--border);border-radius:999px;padding:1px 7px}
+    .scanbar{height:60px;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid var(--border);background:var(--card)}
+    .path{flex:1;height:32px;display:flex;align-items:center;gap:8px;border:1px solid var(--border-strong);border-radius:6px;padding:0 10px;font-family:var(--mono);font-size:12px;color:#344054;background:#fff}
+    .ck{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#475467;white-space:nowrap}
+    .box{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border-strong);display:inline-block}
+    .box.on{background:var(--ink);border-color:var(--ink)}
+    .sel{height:32px;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border-strong);border-radius:6px;padding:0 10px;font-size:12px;font-weight:600;color:#475467;background:#fff;white-space:nowrap}
+    .btn{height:32px;display:inline-flex;align-items:center;gap:7px;padding:0 16px;border-radius:6px;font-size:13px;font-weight:650;border:1px solid var(--accent);background:var(--accent);color:#fff;white-space:nowrap}
+    .body{padding:20px 24px;height:calc(900px - 46px - 60px);overflow:auto}
+    .tiles{display:flex;gap:10px}
+    .tile{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+    .tile b{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums;display:block;margin-top:2px}
+    .tlabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+    .meta{font-size:12px;color:var(--subdued);margin:10px 2px 0}
+    .toolbar{display:flex;align-items:center;gap:8px;margin:16px 0 10px;flex-wrap:wrap}
+    .chip{height:28px;display:inline-flex;align-items:center;gap:7px;padding:0 10px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid var(--border-strong);background:#fff;color:#475467}
+    .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .grp{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--subdued);margin:16px 2px 8px}
+    .list{display:flex;flex-direction:column;gap:6px}
+    .fr{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px}
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px 3px 6px;border-radius:999px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;white-space:nowrap;flex:none}
+    .ttl{font-size:15px;font-weight:600}
+    .tag{display:inline-flex;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;background:#f2f4f7;color:#475467;border:1px solid var(--border)}
+    .pips{display:inline-flex;gap:2px;flex:none}
+    .pips i{width:4px;height:11px;border-radius:1px;display:block}
+    .loc{font-family:var(--mono);font-size:12px;color:var(--subdued);flex:none}
+    .chev{color:var(--subdued);flex:none}
+  </style>
+</helmet>
+
+<!-- top bar -->
+<div class="topbar">
+  <span class="wm">security-preview</span>
+  <span class="vtag">v0.1.0</span>
+  <span style="flex:1"></span>
+  <span class="mono" style="font-size:11px;color:var(--subdued)">127.0.0.1:7862 &middot; local only</span>
+  <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" style="color:var(--subdued)"><path d="M10 3a7 7 0 1 0 0 14 5 5 0 0 1 0-14Z" fill="currentColor"/></svg>
+</div>
+
+<!-- scan bar -->
+<div class="scanbar">
+  <div class="path">
+    <svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true" style="color:var(--subdued);flex:none"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h3.8l1.6 1.8h6.6A1.5 1.5 0 0 1 17 7.3V14a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 2 14V5.5Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+    C:\work\payments-api
+  </div>
+  <label class="ck"><span class="box"></span>Offline</label>
+  <label class="ck"><span class="box on"></span>Scan dependencies</label>
+  <span class="sel">Min confidence: Medium
+    <svg width="12" height="12" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  <span class="btn">
+    <svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M9 3a6 6 0 1 0 3.7 10.7l3.8 3.8 1.4-1.4-3.8-3.8A6 6 0 0 0 9 3Z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+    Scan
+  </span>
+</div>
+
+<!-- body: results -->
+<div class="body">
+  <div class="tiles">
+    <div class="tile" style="border-top:3px solid var(--crit)"><span class="tlabel" style="color:var(--crit)">Critical</span><b>2</b></div>
+    <div class="tile" style="border-top:3px solid var(--high)"><span class="tlabel" style="color:var(--high)">High</span><b>2</b></div>
+    <div class="tile" style="border-top:3px solid var(--med)"><span class="tlabel" style="color:#93370d">Medium</span><b>2</b></div>
+    <div class="tile" style="border-top:3px solid var(--low)"><span class="tlabel" style="color:var(--low)">Low</span><b>1</b></div>
+    <div class="tile" style="border-top:3px solid var(--info)"><span class="tlabel" style="color:#475467">Info</span><b>1</b></div>
+    <div class="tile" style="border-top:3px solid var(--sca)"><span class="tlabel" style="color:var(--sca)">Vuln deps</span><b>3</b></div>
+  </div>
+  <div class="meta">342 files scanned &middot; 47 dependencies checked &middot; finished in 3.1s &middot; <span class="mono">2026-09-01 14:22</span></div>
+
+  <div class="toolbar">
+    <span class="chip on">Critical 2</span>
+    <span class="chip on">High 2</span>
+    <span class="chip on">Medium 2</span>
+    <span class="chip">Low 1</span>
+    <span class="chip">Info 1</span>
+    <span style="width:8px"></span>
+    <span class="sel">Confidence: Medium+ <svg width="12" height="12" viewBox="0 0 20 20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg></span>
+    <span class="chip">Group by file</span>
+    <span style="flex:1"></span>
+    <span class="sel">Sort: Severity <svg width="12" height="12" viewBox="0 0 20 20"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg></span>
+    <span class="chip">Download
+      <svg width="13" height="13" viewBox="0 0 20 20"><path d="M10 3v9m0 0 3.5-3.5M10 12 6.5 8.5M4 15.5h12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+  </div>
+
+  <div class="grp">Critical &middot; 2</div>
+  <div class="list">
+    <div class="fr" style="border-left:3px solid var(--crit)">
+      <span class="badge" style="background:var(--crit)"><svg width="12" height="12" viewBox="0 0 20 20"><path d="M6.6 2h6.8L18 6.6v6.8L13.4 18H6.6L2 13.4V6.6L6.6 2Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="#fff"/></svg>Critical</span>
+      <span class="ttl">SQL Injection</span>
+      <a href="#" class="mono" style="font-size:11px">CWE-89</a><span class="tag">Injection</span>
+      <span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i></span>
+      <span style="flex:1"></span><span class="loc">api/reports.py:142</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="fr" style="border-left:3px solid var(--crit)">
+      <span class="badge" style="background:var(--crit)"><svg width="12" height="12" viewBox="0 0 20 20"><path d="M6.6 2h6.8L18 6.6v6.8L13.4 18H6.6L2 13.4V6.6L6.6 2Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="#fff"/></svg>Critical</span>
+      <span class="ttl">Command Injection</span>
+      <a href="#" class="mono" style="font-size:11px">CWE-78</a><span class="tag">Injection</span>
+      <span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--border-strong)"></i></span>
+      <span style="flex:1"></span><span class="loc">worker/convert.py:88</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <div class="grp">High &middot; 2</div>
+  <div class="list">
+    <div class="fr" style="border-left:3px solid var(--high)">
+      <span class="badge" style="background:var(--high)"><svg width="12" height="12" viewBox="0 0 20 20"><path d="M10 2.5 18.5 17.5H1.5L10 2.5Z" fill="currentColor"/><path d="M10 7.5v4.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="15" r="1.05" fill="#fff"/></svg>High</span>
+      <span class="ttl">Hardcoded Credentials</span>
+      <a href="#" class="mono" style="font-size:11px">CWE-798</a><span class="tag">Secrets</span>
+      <span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i></span>
+      <span style="flex:1"></span><span class="loc">config/settings.py:12</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="fr" style="border-left:3px solid var(--high)">
+      <span class="badge" style="background:var(--high)"><svg width="12" height="12" viewBox="0 0 20 20"><path d="M10 2.5 18.5 17.5H1.5L10 2.5Z" fill="currentColor"/><path d="M10 7.5v4.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="15" r="1.05" fill="#fff"/></svg>High</span>
+      <span class="ttl">Weak Password Hashing</span>
+      <a href="#" class="mono" style="font-size:11px">CWE-328</a><span class="tag">Crypto</span>
+      <span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i></span>
+      <span style="flex:1"></span><span class="loc">auth/users.py:57</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <div class="grp">Medium &middot; 2</div>
+  <div class="list">
+    <div class="fr" style="border-left:3px solid var(--med)">
+      <span class="badge" style="background:var(--med)"><svg width="12" height="12" viewBox="0 0 20 20"><path d="M10 1.8 18.2 10 10 18.2 1.8 10 10 1.8Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.05" fill="#fff"/></svg>Medium</span>
+      <span class="ttl">SSL/TLS Verification Disabled</span>
+      <a href="#" class="mono" style="font-size:11px">CWE-295</a><span class="tag">Config</span>
+      <span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i></span>
+      <span style="flex:1"></span><span class="loc">client/http.py:23</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="fr" style="border-left:3px solid var(--med)">
+      <span class="badge" style="background:var(--med)"><svg width="12" height="12" viewBox="0 0 20 20"><path d="M10 1.8 18.2 10 10 18.2 1.8 10 10 1.8Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.05" fill="#fff"/></svg>Medium</span>
+      <span class="ttl">Debug Mode Enabled</span>
+      <a href="#" class="mono" style="font-size:11px">CWE-489</a><span class="tag">Config</span>
+      <span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--border-strong)"></i></span>
+      <span style="flex:1"></span><span class="loc">app.py:9</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <div class="grp" style="color:var(--sca)">Vulnerable dependencies &middot; 3</div>
+  <div class="list">
+    <div class="fr" style="border-left:3px solid var(--sca)">
+      <span class="badge" style="background:var(--sca)">Dep</span>
+      <span class="ttl mono" style="font-size:13px">lodash 4.17.11</span>
+      <a href="#" class="mono" style="font-size:11px">CVE-2019-10744</a><span class="tag">Prototype pollution</span>
+      <span style="flex:1"></span><span class="loc">fixed in 4.17.12 &middot; package-lock.json</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="fr" style="border-left:3px solid var(--sca)">
+      <span class="badge" style="background:var(--sca)">Dep</span>
+      <span class="ttl mono" style="font-size:13px">pyyaml 5.1</span>
+      <a href="#" class="mono" style="font-size:11px">CVE-2020-1747</a><span class="tag">Arbitrary code exec</span>
+      <span style="flex:1"></span><span class="loc">fixed in 5.3.1 &middot; requirements.txt</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

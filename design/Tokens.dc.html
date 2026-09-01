@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      --ground:#faf9f6; --card:#ffffff; --ink:#131314; --subdued:#6b7280;
+      --border:#e5e7eb; --border-strong:#d5d8dd;
+      --accent:#d97757; --accent-hover:#cc6944; --accent-tint:rgba(217,119,87,.10);
+      --sca:#6941c6; --sca-tint:#f4f0fb;
+      --crit:#912018; --high:#d92d20; --med:#b45309; --low:#175cd3; --info:#667085;
+      --crit-tint:#fef3f2; --high-tint:#fff4ed; --med-tint:#fffaeb; --low-tint:#eff4ff; --info-tint:#f2f4f7;
+      --ok:#067647; --ok-tint:#ecfdf3;
+      --radius:8px; --radius-sm:6px;
+      --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:var(--ground);color:var(--ink);
+      font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{color:var(--accent-hover);text-decoration:underline}
+    h1{font-size:22px;font-weight:650;margin:0}
+    h2{font-size:13px;font-weight:650;text-transform:uppercase;letter-spacing:.06em;
+      color:var(--subdued);margin:0 0 14px}
+    .wrap{padding:48px 52px;max-width:1200px}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+      padding:26px 28px;margin-top:26px}
+    .mono{font-family:var(--mono)}
+    table{border-collapse:collapse;width:100%;font-size:13px}
+    th{text-align:left;font-weight:600;color:var(--subdued);padding:8px 12px;
+      border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+    td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+    tr:last-child td{border-bottom:0}
+    .sw{width:34px;height:22px;border-radius:5px;border:1px solid rgba(0,0,0,.10);display:inline-block;vertical-align:middle}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px 3px 7px;border-radius:999px;
+      font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;white-space:nowrap}
+    .code{font-family:var(--mono);font-size:12px;background:#f6f5f2;border:1px solid var(--border);
+      border-radius:5px;padding:2px 6px;color:#3a3a3c}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  </style>
+</helmet>
+
+<div class="wrap">
+  <div class="row" style="justify-content:space-between;align-items:baseline">
+    <h1>security-preview &mdash; design tokens</h1>
+    <span class="mono" style="color:var(--subdued);font-size:12px">Brand-neutral placeholder set &mdash; swap values, keep roles. Carried forward from Security Auditor.</span>
+  </div>
+
+  <!-- SEVERITY -->
+  <div class="panel">
+    <h2>Severity ramp &mdash; three redundant signals (color + icon + text), fixed order</h2>
+    <table>
+      <thead><tr><th>Level</th><th>Solid badge</th><th>List-row tint</th><th>Hex</th><th>Icon</th><th>Markdown token</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>CRITICAL</strong><div style="color:var(--subdued);font-size:12px">highest alarm</div></td>
+          <td><span class="badge" style="background:var(--crit)"><svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M6.6 2h6.8L18 6.6v6.8L13.4 18H6.6L2 13.4V6.6L6.6 2Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="#fff"/></svg>Critical</span></td>
+          <td><span style="display:inline-block;padding:5px 12px;background:var(--crit-tint);border-left:3px solid var(--crit);border-radius:0 5px 5px 0;color:var(--crit);font-weight:600">SQL Injection</span></td>
+          <td class="mono" style="font-size:12px">#912018<br><span style="color:var(--subdued)">tint #fef3f2</span></td>
+          <td style="color:var(--crit)"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M6.6 2h6.8L18 6.6v6.8L13.4 18H6.6L2 13.4V6.6L6.6 2Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="#fff"/></svg></td>
+          <td><span class="code">&#128308; CRITICAL</span></td>
+        </tr>
+        <tr>
+          <td><strong>HIGH</strong><div style="color:var(--subdued);font-size:12px">strong alarm</div></td>
+          <td><span class="badge" style="background:var(--high)"><svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 18.5 17.5H1.5L10 2.5Z" fill="currentColor"/><path d="M10 7.5v4.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="15" r="1.05" fill="#fff"/></svg>High</span></td>
+          <td><span style="display:inline-block;padding:5px 12px;background:var(--high-tint);border-left:3px solid var(--high);border-radius:0 5px 5px 0;color:var(--high);font-weight:600">Weak Password Hashing</span></td>
+          <td class="mono" style="font-size:12px">#d92d20<br><span style="color:var(--subdued)">tint #fff4ed</span></td>
+          <td style="color:var(--high)"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 18.5 17.5H1.5L10 2.5Z" fill="currentColor"/><path d="M10 7.5v4.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="15" r="1.05" fill="#fff"/></svg></td>
+          <td><span class="code">&#128992; HIGH</span></td>
+        </tr>
+        <tr>
+          <td><strong>MEDIUM</strong><div style="color:var(--subdued);font-size:12px">caution</div></td>
+          <td><span class="badge" style="background:var(--med)"><svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.8 18.2 10 10 18.2 1.8 10 10 1.8Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.05" fill="#fff"/></svg>Medium</span></td>
+          <td><span style="display:inline-block;padding:5px 12px;background:var(--med-tint);border-left:3px solid var(--med);border-radius:0 5px 5px 0;color:#93370d;font-weight:600">SSL Verification Disabled</span></td>
+          <td class="mono" style="font-size:12px">#b45309<br><span style="color:var(--subdued)">tint #fffaeb</span></td>
+          <td style="color:var(--med)"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.8 18.2 10 10 18.2 1.8 10 10 1.8Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.05" fill="#fff"/></svg></td>
+          <td><span class="code">&#128993; MEDIUM</span></td>
+        </tr>
+        <tr>
+          <td><strong>LOW</strong><div style="color:var(--subdued);font-size:12px">minor</div></td>
+          <td><span class="badge" style="background:var(--low)"><svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="currentColor"/><path d="M10 9v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="6.2" r="1.05" fill="#fff"/></svg>Low</span></td>
+          <td><span style="display:inline-block;padding:5px 12px;background:var(--low-tint);border-left:3px solid var(--low);border-radius:0 5px 5px 0;color:var(--low);font-weight:600">Insecure Randomness</span></td>
+          <td class="mono" style="font-size:12px">#175cd3<br><span style="color:var(--subdued)">tint #eff4ff</span></td>
+          <td style="color:var(--low)"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="currentColor"/><path d="M10 9v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="6.2" r="1.05" fill="#fff"/></svg></td>
+          <td><span class="code">&#128309; LOW</span></td>
+        </tr>
+        <tr>
+          <td><strong>INFO</strong><div style="color:var(--subdued);font-size:12px">note</div></td>
+          <td><span class="badge" style="background:var(--info)"><svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="#fff" stroke-width="2"/><path d="M10 9v4.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="6.4" r="1.1" fill="#fff"/></svg>Info</span></td>
+          <td><span style="display:inline-block;padding:5px 12px;background:var(--info-tint);border-left:3px solid var(--info);border-radius:0 5px 5px 0;color:#475467;font-weight:600">Insecure HTTP URL</span></td>
+          <td class="mono" style="font-size:12px">#667085<br><span style="color:var(--subdued)">tint #f2f4f7</span></td>
+          <td style="color:var(--info)"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9v4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="6.4" r="1.1" fill="currentColor"/></svg></td>
+          <td><span class="code">&#9899; INFO</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="color:var(--subdued);font-size:12px;margin:14px 0 0">Contrast: badge text on solid &ge; 4.5:1 in light &amp; dark. The interactive <strong style="color:var(--accent)">accent</strong> (terracotta) is intentionally outside this ramp and never used as a severity &mdash; it only appears on buttons, links and focus rings.</p>
+  </div>
+
+  <!-- NEUTRALS + ACCENT -->
+  <div class="panel">
+    <h2>Neutrals &amp; accents</h2>
+    <div class="row" style="gap:26px">
+      <div>
+        <div style="font-weight:600;margin-bottom:8px">Light</div>
+        <table style="width:360px">
+          <tr><td><span class="sw" style="background:#faf9f6"></span></td><td>ground</td><td class="mono" style="font-size:12px">#faf9f6</td></tr>
+          <tr><td><span class="sw" style="background:#ffffff"></span></td><td>card</td><td class="mono" style="font-size:12px">#ffffff</td></tr>
+          <tr><td><span class="sw" style="background:#131314"></span></td><td>ink</td><td class="mono" style="font-size:12px">#131314</td></tr>
+          <tr><td><span class="sw" style="background:#6b7280"></span></td><td>subdued</td><td class="mono" style="font-size:12px">#6b7280</td></tr>
+          <tr><td><span class="sw" style="background:#e5e7eb"></span></td><td>border</td><td class="mono" style="font-size:12px">#e5e7eb</td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="font-weight:600;margin-bottom:8px">Dark</div>
+        <table style="width:360px">
+          <tr><td><span class="sw" style="background:#131314"></span></td><td>ground</td><td class="mono" style="font-size:12px">#131314</td></tr>
+          <tr><td><span class="sw" style="background:#1c1c1e"></span></td><td>card</td><td class="mono" style="font-size:12px">#1c1c1e</td></tr>
+          <tr><td><span class="sw" style="background:#f2f2f0"></span></td><td>ink</td><td class="mono" style="font-size:12px">#f2f2f0</td></tr>
+          <tr><td><span class="sw" style="background:#9aa0a6"></span></td><td>subdued</td><td class="mono" style="font-size:12px">#9aa0a6</td></tr>
+          <tr><td><span class="sw" style="background:#2e2e30"></span></td><td>border</td><td class="mono" style="font-size:12px">#2e2e30</td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="font-weight:600;margin-bottom:8px">Accents</div>
+        <table style="width:380px">
+          <tr><td><span class="sw" style="background:#d97757"></span></td><td>accent (interactive)</td><td class="mono" style="font-size:12px">#d97757</td></tr>
+          <tr><td><span class="sw" style="background:#cc6944"></span></td><td>accent hover</td><td class="mono" style="font-size:12px">#cc6944</td></tr>
+          <tr><td><span class="sw" style="background:#6941c6"></span></td><td>dependency / SCA class</td><td class="mono" style="font-size:12px">#6941c6</td></tr>
+          <tr><td><span class="sw" style="background:#067647"></span></td><td>success (zero findings)</td><td class="mono" style="font-size:12px">#067647</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPE + SCALE -->
+  <div class="panel">
+    <h2>Type scale &mdash; system stack only (no web fonts, per product constraint)</h2>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:28px;font-weight:650">28 / 650 &mdash; Report title, empty-state headline</div>
+      <div style="font-size:20px;font-weight:600">20 / 600 &mdash; Section headings, drawer finding title</div>
+      <div style="font-size:16px;font-weight:600">16 / 600 &mdash; Finding title in list rows</div>
+      <div style="font-size:14px">14 / 400 &mdash; Body, descriptions, table cells (base)</div>
+      <div style="font-size:12px;color:var(--subdued)">12 / 400 &mdash; Meta line, captions, footnotes</div>
+      <div class="mono" style="font-size:12px">12 mono &mdash; file paths, line numbers, code snippets, re-run command</div>
+    </div>
+    <div class="row" style="margin-top:20px;gap:32px">
+      <div><div style="font-weight:600;margin-bottom:6px">Spacing</div><div class="mono" style="font-size:12px;color:var(--subdued)">4 &middot; 8 &middot; 12 &middot; 16 &middot; 24 &middot; 32 &middot; 48</div></div>
+      <div><div style="font-weight:600;margin-bottom:6px">Radius</div><div class="mono" style="font-size:12px;color:var(--subdued)">6 inputs / chips &nbsp;&middot;&nbsp; 8 cards &amp; panels</div></div>
+      <div><div style="font-weight:600;margin-bottom:6px">Border</div><div class="mono" style="font-size:12px;color:var(--subdued)">1px solid #e5e7eb &middot; shadows minimal / none</div></div>
+      <div><div style="font-weight:600;margin-bottom:6px">Control height</div><div class="mono" style="font-size:12px;color:var(--subdued)">32 (inputs, buttons, selects)</div></div>
+    </div>
+  </div>
+
+  <!-- CONFIDENCE -->
+  <div class="panel">
+    <h2>Confidence indicator &mdash; independent of severity</h2>
+    <div class="row" style="gap:22px">
+      <span style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600">
+        <span style="display:inline-flex;gap:2px"><i style="width:5px;height:12px;background:var(--ink);border-radius:1px"></i><i style="width:5px;height:12px;background:var(--ink);border-radius:1px"></i><i style="width:5px;height:12px;background:var(--ink);border-radius:1px"></i></span>HIGH confidence</span>
+      <span style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600">
+        <span style="display:inline-flex;gap:2px"><i style="width:5px;height:12px;background:var(--ink);border-radius:1px"></i><i style="width:5px;height:12px;background:var(--ink);border-radius:1px"></i><i style="width:5px;height:12px;background:var(--border-strong);border-radius:1px"></i></span>MEDIUM confidence</span>
+      <span style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600">
+        <span style="display:inline-flex;gap:2px"><i style="width:5px;height:12px;background:var(--ink);border-radius:1px"></i><i style="width:5px;height:12px;background:var(--border-strong);border-radius:1px"></i><i style="width:5px;height:12px;background:var(--border-strong);border-radius:1px"></i></span>LOW confidence</span>
+      <span style="color:var(--subdued);font-size:12px">Shown as a 3-pip meter + label. Default list filter hides LOW-confidence findings.</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

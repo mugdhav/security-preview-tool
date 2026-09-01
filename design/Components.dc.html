@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    :root{
+      --ground:#faf9f6; --card:#ffffff; --ink:#131314; --subdued:#6b7280;
+      --border:#e5e7eb; --border-strong:#d5d8dd;
+      --accent:#d97757; --accent-hover:#cc6944; --accent-tint:rgba(217,119,87,.10);
+      --sca:#6941c6; --sca-tint:#f4f0fb;
+      --crit:#912018; --high:#d92d20; --med:#b45309; --low:#175cd3; --info:#667085;
+      --crit-tint:#fef3f2; --high-tint:#fff4ed; --med-tint:#fffaeb; --low-tint:#eff4ff; --info-tint:#f2f4f7;
+      --ok:#067647; --ok-tint:#ecfdf3; --warn:#b54708; --warn-tint:#fffaeb;
+      --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+      --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:var(--ground);color:var(--ink);font-size:14px;line-height:1.5}
+    a{color:var(--accent);text-decoration:none} a:hover{color:var(--accent-hover);text-decoration:underline}
+    h1{font-size:22px;font-weight:650;margin:0}
+    h2{font-size:13px;font-weight:650;text-transform:uppercase;letter-spacing:.06em;color:var(--subdued);margin:0 0 14px}
+    .wrap{padding:48px 52px;max-width:1200px}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:26px 28px;margin-top:26px}
+    .mono{font-family:var(--mono)}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px 3px 7px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;white-space:nowrap}
+    .tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:600;background:#f2f4f7;color:#475467;border:1px solid var(--border)}
+    .cve{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;font-family:var(--mono);background:#fff;border:1px solid var(--border-strong);color:#344054}
+    .pips{display:inline-flex;gap:2px}
+    .pips i{width:5px;height:12px;border-radius:1px;display:block}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+    .snip{font-family:var(--mono);font-size:12px;line-height:1.7;background:#1c1c1e;color:#d4d4d6;border-radius:6px;padding:12px 0;overflow:hidden}
+    .snip .ln{display:flex;gap:14px;padding:0 16px}
+    .snip .num{color:#6b6b70;user-select:none;text-align:right;width:26px;flex:none}
+    .snip .hit{background:rgba(217,45,32,.18);box-shadow:inset 3px 0 0 var(--high)}
+    .btn{height:32px;display:inline-flex;align-items:center;gap:7px;padding:0 14px;border-radius:6px;font-size:13px;font-weight:600;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+    .btn.ghost{background:transparent;color:var(--ink);border-color:var(--border-strong)}
+    .chip{height:28px;display:inline-flex;align-items:center;gap:7px;padding:0 11px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid var(--border-strong);background:#fff;color:#475467;cursor:pointer}
+    .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .tile{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+    .tile b{font-size:26px;font-weight:650;font-variant-numeric:tabular-nums}
+    .banner{display:flex;gap:12px;align-items:flex-start;border-radius:8px;padding:13px 16px;font-size:13px;border:1px solid}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .anno{width:20px;height:20px;border-radius:999px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+    .rk{display:flex;gap:10px;align-items:flex-start;font-size:13px;padding:6px 0}
+  </style>
+</helmet>
+
+<div class="wrap">
+  <h1>security-preview &mdash; component sheet</h1>
+  <p style="color:var(--subdued);font-size:12px;margin:6px 0 0">The Finding card is the atomic unit &mdash; it appears, degraded per target, in the desktop app, the HTML report and the Markdown report.</p>
+
+  <!-- BADGES / METERS / CHIPS -->
+  <div class="panel">
+    <h2>Primitives</h2>
+    <div class="row" style="gap:10px">
+      <span class="badge" style="background:var(--crit)">Critical</span>
+      <span class="badge" style="background:var(--high)">High</span>
+      <span class="badge" style="background:var(--med)">Medium</span>
+      <span class="badge" style="background:var(--low)">Low</span>
+      <span class="badge" style="background:var(--info)">Info</span>
+      <span style="width:24px"></span>
+      <span class="tag">Injection</span><span class="tag">Crypto</span><span class="tag">Secrets</span><span class="tag">Config</span>
+      <span style="width:24px"></span>
+      <span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i></span>
+      <span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--border-strong)"></i></span>
+      <span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--border-strong)"></i><i style="background:var(--border-strong)"></i></span>
+      <span style="width:24px"></span>
+      <a class="cve" href="#">CVE-2018-18074</a><a class="cve" href="#">GHSA-x84v-xcm2</a>
+      <span style="width:24px"></span>
+      <button class="chip on">Critical 2</button><button class="chip">High 2</button><button class="chip">Group by file</button>
+      <button class="btn">Scan</button><button class="btn ghost">Download</button>
+    </div>
+  </div>
+
+  <!-- STAT TILES -->
+  <div class="panel">
+    <h2>Summary stat tiles</h2>
+    <div class="row" style="gap:12px;flex-wrap:nowrap">
+      <div class="tile" style="border-top:3px solid var(--crit)"><div style="color:var(--crit);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Critical</div><b>2</b></div>
+      <div class="tile" style="border-top:3px solid var(--high)"><div style="color:var(--high);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em">High</div><b>2</b></div>
+      <div class="tile" style="border-top:3px solid var(--med)"><div style="color:#93370d;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Medium</div><b>2</b></div>
+      <div class="tile" style="border-top:3px solid var(--low)"><div style="color:var(--low);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Low</div><b>1</b></div>
+      <div class="tile" style="border-top:3px solid var(--info)"><div style="color:#475467;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Info</div><b>1</b></div>
+      <div class="tile" style="border-top:3px solid var(--sca)"><div style="color:var(--sca);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Vuln deps</div><b>3</b></div>
+    </div>
+  </div>
+
+  <!-- BANNERS -->
+  <div class="panel">
+    <h2>Banners &mdash; info / partial (amber) / error / success</h2>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="banner" style="background:#f2f4f7;border-color:var(--border)"><span style="color:var(--info);flex:none">&#9432;</span><div><strong>Deterministic non-LLM scan.</strong> Same input &rarr; same findings. Optional CVE lookups are the only network activity.</div></div>
+      <div class="banner" style="background:var(--warn-tint);border-color:#fde3b3"><span style="color:var(--warn);flex:none;font-weight:700">&#9650;</span><div><strong>Enrichment incomplete &mdash; 12 CVE lookups failed (connection timeout).</strong> Code findings and dependency matches are complete. <a href="#">See Skipped / Errors &rarr;</a></div></div>
+      <div class="banner" style="background:var(--crit-tint);border-color:#fdd6d3"><span style="color:var(--crit);flex:none;font-weight:700">&#10005;</span><div><strong>Couldn&#39;t scan that path.</strong> <span class="mono">C:\work\missing</span> is not a directory.</div></div>
+      <div class="banner" style="background:var(--ok-tint);border-color:#c9ecd8"><span style="color:var(--ok);flex:none;font-weight:700">&#10003;</span><div><strong>No issues found</strong> across 342 files and 47 dependencies.</div></div>
+    </div>
+  </div>
+
+  <!-- CODE + REMEDIATION -->
+  <div class="panel">
+    <h2>Code-snippet block &amp; remediation block</h2>
+    <div class="row" style="align-items:flex-start;gap:20px">
+      <div style="flex:1;min-width:340px">
+        <div style="font-size:12px;color:var(--subdued);margin-bottom:6px" class="mono">auth/users.py:57 &nbsp;&middot;&nbsp; offending line highlighted &middot; secrets masked</div>
+        <div class="snip">
+          <div class="ln"><span class="num">55</span><span>def set_password(self, password):</span></div>
+          <div class="ln"><span class="num">56</span><span>&nbsp;&nbsp;&nbsp;&nbsp;salt = os.urandom(16)</span></div>
+          <div class="ln hit"><span class="num">57</span><span>&nbsp;&nbsp;&nbsp;&nbsp;hashed = hashlib.md5(password.encode()).hexdigest()</span></div>
+          <div class="ln"><span class="num">58</span><span>&nbsp;&nbsp;&nbsp;&nbsp;self.pw_hash = hashed</span></div>
+        </div>
+        <div class="mono" style="font-size:12px;color:var(--subdued);margin-top:8px">STRIPE_SECRET = "sk_live_&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"</div>
+      </div>
+      <div style="flex:1;min-width:340px">
+        <div style="border:1px solid #fdd6d3;border-radius:6px;overflow:hidden;margin-bottom:10px">
+          <div style="background:var(--crit-tint);color:var(--crit);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:6px 12px">Vulnerable</div>
+          <div class="mono" style="font-size:12px;padding:10px 12px;color:#3a3a3c">hashed = hashlib.md5(pw.encode()).hexdigest()</div>
+        </div>
+        <div style="border:1px solid #c9ecd8;border-radius:6px;overflow:hidden">
+          <div style="background:var(--ok-tint);color:var(--ok);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:6px 12px">Secure</div>
+          <div class="mono" style="font-size:12px;padding:10px 12px;color:#3a3a3c">from argon2 import PasswordHasher<br>hashed = PasswordHasher().hash(pw)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINDING CARD: COLLAPSED -->
+  <div class="panel">
+    <h2>Finding card &mdash; collapsed (list row)</h2>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-left:3px solid var(--crit)">
+        <span class="badge" style="background:var(--crit)"><svg width="13" height="13" viewBox="0 0 20 20" aria-hidden="true"><path d="M6.6 2h6.8L18 6.6v6.8L13.4 18H6.6L2 13.4V6.6L6.6 2Z" fill="currentColor"/><path d="M10 6v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="#fff"/></svg>Critical</span>
+        <span style="font-size:16px;font-weight:600">SQL Injection</span>
+        <a href="#" class="mono" style="font-size:12px">CWE-89</a>
+        <span class="tag">Injection</span>
+        <span class="pips" title="HIGH confidence"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i></span>
+        <span style="flex:1"></span>
+        <span class="mono" style="font-size:12px;color:var(--subdued)">api/reports.py:142</span>
+        <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" style="color:var(--subdued)"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINDING CARD: EXPANDED with anatomy -->
+  <div class="panel">
+    <h2>Finding card &mdash; expanded (drawer / <code>&lt;details open&gt;</code>) &middot; numbers key the brief &sect;1.3</h2>
+    <div class="card" style="max-width:640px">
+      <div style="border-left:3px solid var(--crit);padding:16px 18px">
+        <div class="row" style="gap:10px">
+          <span class="anno">1</span><span class="badge" style="background:var(--crit)">Critical</span>
+          <span class="anno">2</span><span style="font-size:18px;font-weight:600">SQL Injection</span>
+        </div>
+        <div class="row" style="gap:10px;margin-top:12px">
+          <span class="anno">3</span><a href="#" class="mono" style="font-size:12px">CWE-89</a>
+          <span class="anno">4</span><span class="pips"><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i><i style="background:var(--ink)"></i></span><span style="font-size:12px;font-weight:600">HIGH</span>
+          <span class="anno">5</span><span class="tag">Injection</span>
+          <span class="anno">6</span><span class="mono" style="font-size:12px;color:var(--subdued)">api/reports.py:142</span>
+        </div>
+        <div class="row" style="gap:10px;margin-top:14px;align-items:flex-start;flex-wrap:nowrap">
+          <span class="anno">7</span>
+          <div class="snip" style="flex:1">
+            <div class="ln"><span class="num">141</span><span>owner = request.args["user"]</span></div>
+            <div class="ln hit"><span class="num">142</span><span>cur.execute(f"SELECT * FROM reports WHERE owner = '{owner}'")</span></div>
+            <div class="ln"><span class="num">143</span><span>rows = cur.fetchall()</span></div>
+          </div>
+        </div>
+        <div class="rk" style="margin-top:14px"><span class="anno">8</span><p style="margin:0">User-controlled <span class="mono">owner</span> is interpolated straight into the SQL string, so an attacker can alter the query and read or modify any row.</p></div>
+        <div class="rk"><span class="anno">9</span>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+            <div style="border:1px solid #fdd6d3;border-radius:6px;overflow:hidden"><div style="background:var(--crit-tint);color:var(--crit);font-size:10px;font-weight:700;text-transform:uppercase;padding:5px 10px">Vulnerable</div><div class="mono" style="font-size:12px;padding:9px 10px">cur.execute(f"... owner = '{owner}'")</div></div>
+            <div style="border:1px solid #c9ecd8;border-radius:6px;overflow:hidden"><div style="background:var(--ok-tint);color:var(--ok);font-size:10px;font-weight:700;text-transform:uppercase;padding:5px 10px">Secure</div><div class="mono" style="font-size:12px;padding:9px 10px">cur.execute("... owner = %s", (owner,))</div></div>
+          </div>
+        </div>
+        <div class="rk"><span class="anno">10</span><div class="row" style="gap:6px"><a class="cve" href="#">CVE-2019-19844</a><a class="cve" href="#">CVE-2021-23336</a><span style="font-size:11px;color:var(--subdued)">illustrative &mdash; matched by CWE, not by your code</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

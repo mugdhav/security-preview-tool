@@ -1,0 +1,29 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Foundations" },
+    { "id": "page-2", "name": "Desktop app" },
+    { "id": "page-3", "name": "Report document" }
+  ],
+  "artboards": [
+    { "file": "Tokens.dc.html", "page": "page-1", "x": 0, "y": 0, "w": 1200, "h": 1600 },
+    { "file": "Components.dc.html", "page": "page-1", "x": 1360, "y": 0, "w": 1240, "h": 2160 },
+
+    { "file": "Main.dc.html", "page": "page-2", "x": 0, "y": 0, "w": 1440, "h": 900, "is_interactive": false },
+    { "file": "Empty.dc.html", "page": "page-2", "x": 1600, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Scanning.dc.html", "page": "page-2", "x": 3200, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Detail.dc.html", "page": "page-2", "x": 0, "y": 1080, "w": 1440, "h": 900 },
+    { "file": "EdgeStates.dc.html", "page": "page-2", "x": 1600, "y": 1080, "w": 1440, "h": 2060 },
+
+    { "file": "ReportScreen.dc.html", "page": "page-3", "x": 0, "y": 0, "w": 980, "h": 2340, "print": "flow" },
+    { "file": "ReportPrint.dc.html", "page": "page-3", "x": 1140, "y": 0, "w": 816, "h": 1380, "print": "flow" }
+  ],
+  "annotations": [
+    { "id": "note-foundations", "page": "page-1", "x": 0, "y": -96, "w": 520,
+      "text": "Foundations. Severity = colour + icon + text (never colour alone). Palette carried forward from Security Auditor (warm neutral + terracotta) and shipped as swappable tokens. The Finding card is the one atom reused, degraded, in every target." },
+    { "id": "note-desktop", "page": "page-2", "x": 0, "y": -96, "w": 620,
+      "text": "Desktop app = local browser window at 127.0.0.1, 1440x900 baseline, single window / no routing, no account or marketing surface. Static mockups (not a clickable prototype). EdgeStates stacks Zero / Partial / Error; split into three artboards if you want them separate." },
+    { "id": "note-report", "page": "page-3", "x": 0, "y": -96, "w": 620,
+      "text": "One report design, two renderings. Left = self-contained HTML file (CLI + skill), on-screen view, JS-free, collapsible via <details>. Right = the same file's print stylesheet: grayscale-safe severity, all findings expanded, full link URLs, hard page breaks. Markdown report is a written spec, not an artboard." }
+  ],
+  "launch": { "view": "canvas", "page": "page-2" }
+}
