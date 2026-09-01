@@ -1,0 +1,21 @@
+{
+    "_meta": {
+        "hash": {"sha256": "abc123"},
+        "requires": {"python_version": "3.11"}
+    },
+    "default": {
+        "jinja2": {
+            "hashes": ["sha256:deadbeef"],
+            "version": "==3.1.2"
+        },
+        "wildcard-pkg": {
+            "version": "*"
+        }
+    },
+    "develop": {
+        "pytest": {
+            "hashes": ["sha256:cafef00d"],
+            "version": "==8.1.1"
+        }
+    }
+}
