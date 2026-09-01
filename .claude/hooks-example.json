@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python -c \"import shutil,subprocess,sys; sys.exit(0) if not shutil.which('security-preview') else subprocess.run(['security-preview','scan','.','--format','text','--min-confidence','high'])\""
+            "command": "python -c \"import shutil,subprocess,sys\nif not shutil.which('security-preview'):\n    sys.exit(0)\np=subprocess.run(['security-preview','scan','.','--format','text','--min-confidence','high'],capture_output=True,text=True)\nsys.stdout.write(p.stdout)\nsys.exit(0)\""
           }
         ]
       }

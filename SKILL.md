@@ -73,9 +73,11 @@ Scan a directory and print (or write) a report.
 | `--min-confidence` | `low`, `medium` (default), `high` | Drop findings below this confidence. |
 | `--out` | stdout | Write the report to this file instead of stdout. |
 
-Exit code is `0` on a completed scan (regardless of findings) and non-zero only
-on a hard error (path missing, not a directory). Gate CI on the JSON/SARIF
-content, not the exit code.
+Exit code: `0` when the scan completes with no CRITICAL findings, `1` when it
+completes with one or more CRITICAL findings, `2` on a usage / IO error (path
+missing, not a directory, bad `--format`). Network / enrichment failures only mark
+the report PARTIAL. The report is still emitted on exit `1`, so a new-vs-baseline
+CI gate can parse the JSON regardless of the code.
 
 ### `security-preview serve [--port N]`
 

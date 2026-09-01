@@ -177,5 +177,6 @@ browser (inline CSS, no scripts, no network).
 - `--offline` skips all network (OSV + NVD); SAST still completes and the report
   is flagged **PARTIAL**. OSV/NVD responses are cached under
   `~/.security-preview/cache/` for 24 h, so later online runs are fast.
-- Exit code is `0` on any completed scan regardless of findings; gate CI on the
-  JSON/SARIF content. See `docs/USAGE.md` for a baseline-diff gate.
+- Exit code: `0` = completed, no CRITICAL findings; `1` = completed with CRITICAL
+  findings; `2` = usage/IO error. The report is still emitted on exit `1`, so a
+  baseline-diff gate can parse the JSON either way. See `docs/USAGE.md`.

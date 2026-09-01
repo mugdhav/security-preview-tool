@@ -86,10 +86,13 @@ security-preview scan . --offline --no-sca                # SAST only, no networ
 | `--min-confidence` | `low`, `medium` (default), `high` | Hide findings whose confidence is below this level. Confidence is independent of severity. |
 | `--out` | stdout | Write the report to this path instead of printing it. |
 
-Exit status: `0` whenever a scan completes, **even if it found vulnerabilities**;
-non-zero only on a hard error (path does not exist, path is a file, unreadable
-root). CI gates should inspect the JSON or SARIF content, not the exit code — see
-the hook example below.
+Exit status: `0` when the scan completes with **no CRITICAL findings** (after the
+confidence filter); `1` when the scan completes and at least one CRITICAL finding
+remains; `2` on a usage / IO error (path missing, path is a file, bad `--format`,
+unwritable `--out`). Network or enrichment failures never change the exit code —
+they only mark the report **PARTIAL**. The report is still written to stdout / `--out`
+on exit `1`, so CI gates that want new-vs-baseline semantics can parse the JSON
+regardless of the code — see the hook example below.
 
 ## Other subcommands
 
