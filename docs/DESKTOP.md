@@ -59,8 +59,19 @@ rejected.
 ### Explorer / Finder right-click (when installed)
 
 `security-preview-desktop --scan "<folder>"` opens the window pre-pointed at that
-folder and starts scanning. The Windows installer can add a
-*"Scan with security-preview"* entry to the folder right-click menu.
+folder and starts scanning.
+
+On Windows, the **Inno Setup** installer
+(`security-preview-setup-<version>.exe`) offers a checkbox *"Add 'Scan with
+security-preview' to the folder right-click menu"*. When ticked it writes
+`HKCU\Software\Classes\Directory\shell\SecurityPreview` (and the `Background`
+verb for right-clicking inside a folder), both running
+`security-preview.exe --scan "%V"`. The uninstaller removes them.
+
+For a portable copy, edit the two exe paths in
+`resources/installer/context-menu.reg` and double-click it;
+`context-menu-uninstall.reg` reverses it. The Briefcase `.msi` does **not** add
+the verb yet (needs a WiX fragment).
 
 ---
 
@@ -84,16 +95,24 @@ without it, `serve` uses the system browser.
 ```
 python -m pip install -e ".[package]"      # pywebview + briefcase + pyinstaller
 
+python scripts/make_icon_master.py         # (re)draw the placeholder icon master
 python scripts/build_desktop.py check      # launcher smoke test (no network)
-python scripts/build_desktop.py icons      # regenerate icons from a 1024² master
+python scripts/build_desktop.py icons      # regenerate icons from the 1024² master
 python scripts/build_desktop.py installer  # Briefcase installer for this OS
 python scripts/build_desktop.py portable   # one-file PyInstaller .exe
+python scripts/build_desktop.py inno       # Windows: Inno Setup installer (needs iscc)
 ```
 
 CI (`.github/workflows/desktop-release.yml`) builds all three OSes on a `v*` tag,
 runs the test suite + a self-scan first, and attaches the installers to the
-GitHub Release. Code-signing secrets are used when configured; otherwise builds
-ship unsigned with the allow-steps above.
+GitHub Release.
+
+**Signing is dormant**: each signing step no-ops until its repo secret exists,
+and the build ships unsigned with the allow-steps above until then. Set
+`WINDOWS_PFX_BASE64` + `WINDOWS_PFX_PASSWORD` for Authenticode; and
+`APPLE_CERT_P12_BASE64`, `APPLE_CERT_P12_PASSWORD`, `APPLE_IDENTITY`,
+`APPLE_TEAM_ID`, `APPLE_NOTARY_USER`, `APPLE_NOTARY_PASSWORD` for the Apple
+Developer ID + notarization path.
 
 ---
 

@@ -7,10 +7,14 @@ Subcommands
                                                  from resources/icons/security-preview.png
     python scripts/build_desktop.py portable     one-file PyInstaller build
     python scripts/build_desktop.py installer     Briefcase installer for this OS
+    python scripts/build_desktop.py inno          Inno Setup installer (Windows;
+                                                 wraps the portable exe, adds the
+                                                 folder right-click verb)
     python scripts/build_desktop.py check         import + healthz smoke test
 
 None of these need network access. `installer`/`portable` need the `package`
-extra: `python -m pip install -e ".[package]"`.
+extra: `python -m pip install -e ".[package]"`. `inno` needs Inno Setup 6
+(`iscc` on PATH) and a prior `portable` build.
 """
 from __future__ import annotations
 
@@ -63,6 +67,22 @@ def cmd_icons(_argv: list[str]) -> int:
 
 def cmd_portable(_argv: list[str]) -> int:
     return _run([sys.executable, "-m", "PyInstaller", "pyinstaller/security-preview.spec"])
+
+
+def cmd_inno(_argv: list[str]) -> int:
+    import shutil
+
+    exe = ROOT / "dist" / ("security-preview.exe" if sys.platform == "win32" else "security-preview")
+    if not exe.exists():
+        print("run 'build_desktop.py portable' first (missing dist/security-preview.exe)",
+              file=sys.stderr)
+        return 1
+    iscc = shutil.which("iscc") or shutil.which("ISCC")
+    if not iscc:
+        print("Inno Setup not found: install v6 and put 'iscc' on PATH "
+              "(https://jrsoftware.org/isdl.php)", file=sys.stderr)
+        return 1
+    return _run([iscc, "resources/installer/security-preview.iss"])
 
 
 def cmd_installer(argv: list[str]) -> int:
@@ -119,6 +139,7 @@ _COMMANDS = {
     "icons": cmd_icons,
     "portable": cmd_portable,
     "installer": cmd_installer,
+    "inno": cmd_inno,
     "check": cmd_check,
 }
 

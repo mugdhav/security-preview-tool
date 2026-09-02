@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+; Removes the "Scan with security-preview" folder right-click entries added by
+; context-menu.reg. Double-click to apply. (The Inno Setup uninstaller does this
+; for you.)
+
+[-HKEY_CURRENT_USER\Software\Classes\Directory\shell\SecurityPreview]
+
+[-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\SecurityPreview]

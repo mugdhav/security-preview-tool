@@ -21,14 +21,26 @@ Reads with: `security-preview-plan.md` (tool behaviour), `security-preview-desig
   **Choose folder…** button + mode detection + `?path=&autoscan=1` deep link in
   `index.html`. Falls back to the system browser when `pywebview` is absent.
 - **Packaging scaffold**: `[tool.briefcase.*]` tables, `pyinstaller/security-preview.spec`,
-  `scripts/build_desktop.py` (`check` / `icons` / `portable` / `installer`),
-  `.github/workflows/desktop-release.yml`, `docs/DESKTOP.md`.
+  `scripts/build_desktop.py` (`check` / `icons` / `portable` / `installer` / `inno`),
+  `scripts/make_icon_master.py`, `.github/workflows/desktop-release.yml`, `docs/DESKTOP.md`.
+- **D3 (partial)**: placeholder 1024² icon master + generated `.ico` / `.icns` /
+  PNG ladder in `resources/icons/`. Real designed logo + on-OS installer builds
+  still outstanding.
+- **D4 (scaffolded)**: CI signing steps for Windows Authenticode (`signtool`) and
+  Apple Developer ID + notarization (`notarytool` / `stapler`) are wired but
+  **dormant** — each no-ops until its repo secret is set. Cert procurement is the
+  only blocker.
+- **D5 (installer side)**: `resources/installer/security-preview.iss` (Inno Setup)
+  ships the portable exe with an optional *"Scan with security-preview"* folder
+  right-click verb + clean uninstall; `context-menu.reg` /
+  `context-menu-uninstall.reg` for portable copies. The `--scan` launcher hook
+  was already done. Briefcase `.msi` verb (WiX fragment) still outstanding.
 - Tests: `tests/test_desktop.py` (+ server/CLI updates); test-plan §3.5, §4.1,
   §4.4, §6.3, §6.5 revised. `pytest -q` → 151 passed.
 
-**Not yet** — D3 finish (real icon master + built installers on all 3 OSes), D4
-(code-signing certs + notarization), D5 (Explorer right-click installer entry;
-the `--scan` launcher hook itself is done).
+**Not yet** — a real designed logo; built + smoke-tested installers on all three
+OSes; code-signing certs (Windows Authenticode + Apple Developer Program); the
+Briefcase-MSI right-click verb.
 
 ---
 

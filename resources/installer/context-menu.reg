@@ -1,0 +1,24 @@
+Windows Registry Editor Version 5.00
+
+; "Scan with security-preview" on the folder right-click menu.
+;
+; This is a HAND-INSTALL TEMPLATE: replace the two exe paths below with the real
+; install location, then double-click. The Inno Setup installer
+; (security-preview.iss) writes these keys automatically under {app} and its
+; uninstaller removes them, so you only need this file for a portable copy.
+;
+; %V = the folder that was right-clicked (or whose background was right-clicked).
+
+[HKEY_CURRENT_USER\Software\Classes\Directory\shell\SecurityPreview]
+@="Scan with security-preview"
+"Icon"="C:\\Program Files\\security-preview\\security-preview.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\Directory\shell\SecurityPreview\command]
+@="\"C:\\Program Files\\security-preview\\security-preview.exe\" --scan \"%V\""
+
+[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\SecurityPreview]
+@="Scan with security-preview"
+"Icon"="C:\\Program Files\\security-preview\\security-preview.exe,0"
+
+[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\SecurityPreview\command]
+@="\"C:\\Program Files\\security-preview\\security-preview.exe\" --scan \"%V\""

@@ -179,8 +179,8 @@ Run `security-preview serve`, drive in Chromium at desktop width.
 | DESK-07 | Launch twice → defined behaviour (single window focused, or a fresh scan). |
 | DESK-08 | Offline machine (no NIC) → app starts, scans with Offline checked, PARTIAL banner shown. |
 | DESK-09 | WebView2 missing (Win 10 clean) → installer bootstraps it, or the app falls back to the browser with a clear message. |
-| DESK-10 | `security-preview-desktop --scan <folder>` → window opens pre-pointed and scans (Explorer right-click verb). |
-| DESK-11 | Uninstaller removes app, shortcuts, and any context-menu keys. |
+| DESK-10 | Inno installer (`security-preview-setup-*.exe`): tick *"Add 'Scan with security-preview'…"* → right-click a folder / folder background → **Scan with security-preview** → `security-preview.exe --scan "%V"` → window opens pre-pointed and scans. Untick → no verb added. |
+| DESK-11 | Uninstaller removes app, shortcuts, and the `HKCU\…\Directory\shell\SecurityPreview` (+ `Background`) keys. `context-menu-uninstall.reg` also clears them for a portable copy. |
 | DESK-12 | Antivirus / SmartScreen: signed build shows publisher, no hard block; unsigned build documented allow-step works. |
 | DESK-13 | `security-preview serve` with `pywebview` **not** installed → browser fallback, `--open` works, `--desktop` degrades gracefully. |
 | DESK-14 | `python scripts/build_desktop.py check` passes (launcher smoke: `/healthz` + `/api/pick-folder`). **[auto-capable]** |
@@ -277,8 +277,10 @@ Fresh agent session with the skill installed; observe whether it invokes `securi
 - PKG-04: `import security_preview` exposes the assembled API (`scan` via `security_preview.scan`, `render`, `FORMATS`, models, `ScanConfig`); `from security_preview.scan import scan` works.
 - PKG-05: `ruff check .` clean; `mypy src` clean.
 - PKG-06: `pip install "security-preview[desktop]"` adds `pywebview`; `security-preview-desktop` console script on PATH; `python -m security_preview` opens the window.
-- PKG-07: `briefcase create/build/package <windows|macOS|linux>` produce an installer with a shortcut + icon; `scripts/build_desktop.py portable` produces a one-file `.exe`. Bundled deps pinned; `security-preview scan .` run on the build tree in CI before packaging (dogfood). **[CI: `.github/workflows/desktop-release.yml`]**
+- PKG-07: `briefcase create/build/package <windows|macOS|linux>` produce an installer with a shortcut + icon; `scripts/build_desktop.py portable` produces a one-file `.exe`; `… inno` wraps it as `security-preview-setup-*.exe`. Bundled deps pinned; `security-preview scan .` run on the build tree in CI before packaging (dogfood). **[CI: `.github/workflows/desktop-release.yml`]**
 - PKG-08: `server/static/index.html` is packaged in the wheel and the frozen bundle — `GET /` works from an installed wheel and from the Briefcase/PyInstaller app, not just the source tree.
+- PKG-09: `scripts/make_icon_master.py` → `build_desktop.py icons` regenerates `resources/icons/security-preview.{png,ico,icns}` + the PNG ladder; the app tile / taskbar / titlebar icon shows the shield mark (legible at 16 px). **[auto: files exist; manual: on-OS look]**
+- PKG-10: CI signing steps stay dormant with no secrets (build ships unsigned, green); with `WINDOWS_PFX_BASE64` / the `APPLE_*` set, artifacts come out Authenticode-signed / Developer-ID-signed + notarized + stapled. **[CI]**
 
 ---
 
@@ -299,7 +301,7 @@ Fresh agent session with the skill installed; observe whether it invokes `securi
 | Scaffold contract sanity | `tests/test_scaffold.py` | 6 |
 | **Total** | `pytest -q` | **151 passed** |
 
-**Gaps to close with manual/exploratory testing (this plan):** all UI states (§4.3), real-network behaviour (§6.2), `serve` real browser/window & bind scope (CLI-40…45), the packaged desktop app on real OSes (§4.4 DESK-01…13), bootstrap on real machines (SKILL-11…13), hook behaviour end-to-end in a live agent session (§5.3), skill trigger judgement (§5.1), packaged-wheel checks (PKG-03, PKG-07/08).
+**Gaps to close with manual/exploratory testing (this plan):** all UI states (§4.3), real-network behaviour (§6.2), `serve` real browser/window & bind scope (CLI-40…45), the packaged desktop app on real OSes (§4.4 DESK-01…14), bootstrap on real machines (SKILL-11…13), hook behaviour end-to-end in a live agent session (§5.3), skill trigger judgement (§5.1), packaged-wheel + installer + icon + signing checks (PKG-03, PKG-07…10).
 
 ---
 
