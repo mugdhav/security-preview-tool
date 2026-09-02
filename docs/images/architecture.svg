@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="470" viewBox="0 0 880 470" font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#8a8f98"/>
+    </marker>
+    <style>
+      .card{fill:#ffffff;stroke:#d5d8dd;stroke-width:1.5;rx:10}
+      .h{font-size:15px;font-weight:700;fill:#131314}
+      .s{font-size:12px;fill:#6b7280}
+      .lbl{font-size:11px;fill:#8a8f98}
+      .eng{fill:#fbf1ec;stroke:#d97757;stroke-width:1.5}
+      .engh{font-size:15px;font-weight:700;fill:#b3502f}
+      .flow{stroke:#8a8f98;stroke-width:1.5;fill:none;marker-end:url(#arr)}
+      .pill{fill:#f2f4f7;stroke:#e5e7eb}
+      .pillt{font-size:11px;fill:#3f4450;font-weight:600}
+    </style>
+  </defs>
+
+  <text x="40" y="34" font-size="18" font-weight="700" fill="#131314">security-preview — one engine, three shapes</text>
+  <text x="40" y="55" class="s">Every shape calls the same scan(path, ScanConfig) → ScanResult. No divergent code paths.</text>
+
+  <!-- three shapes -->
+  <g>
+    <rect class="card" x="40" y="80" width="250" height="92" rx="10"/>
+    <text x="60" y="108" class="h">Browser / Desktop app</text>
+    <text x="60" y="128" class="s">security-preview serve  ·  double-click</text>
+    <text x="60" y="146" class="s">Pick a folder, click Scan, read the</text>
+    <text x="60" y="162" class="s">report, download it.</text>
+  </g>
+  <g>
+    <rect class="card" x="315" y="80" width="250" height="92" rx="10"/>
+    <text x="335" y="108" class="h">CLI</text>
+    <text x="335" y="128" class="s">security-preview scan &lt;path&gt;</text>
+    <text x="335" y="146" class="s">text · markdown · json · sarif · html</text>
+    <text x="335" y="162" class="s">Exit 0 / 1 (CRITICAL) / 2 (usage). CI.</text>
+  </g>
+  <g>
+    <rect class="card" x="590" y="80" width="250" height="92" rx="10"/>
+    <text x="610" y="108" class="h">Coding-agent skill</text>
+    <text x="610" y="128" class="s">SKILL.md + scripts/bootstrap.py</text>
+    <text x="610" y="146" class="s">Claude Code / Cursor invoke on</text>
+    <text x="610" y="162" class="s">demand or via a SessionStart hook.</text>
+  </g>
+
+  <!-- arrows to engine -->
+  <path class="flow" d="M165 172 L165 205 L420 205 L420 232"/>
+  <path class="flow" d="M440 172 L440 232"/>
+  <path class="flow" d="M715 172 L715 205 L460 205 L460 232"/>
+
+  <!-- engine -->
+  <rect class="eng" x="150" y="234" width="580" height="86" rx="10"/>
+  <text x="170" y="262" class="engh">scan(path, ScanConfig)  →  ScanResult</text>
+  <text x="170" y="284" class="s">config.py freezes every toggle · ErrorCollector marks a run PARTIAL, never crashes it</text>
+  <text x="170" y="304" class="s">deterministic · non-LLM · same tree in → same report out</text>
+
+  <!-- pipeline -->
+  <path class="flow" d="M440 320 L440 348"/>
+  <g>
+    <rect class="pill" x="60"  y="352" width="150" height="30" rx="15"/>
+    <text x="135" y="371" class="pillt" text-anchor="middle">1 · Discover files</text>
+    <rect class="pill" x="230" y="352" width="150" height="30" rx="15"/>
+    <text x="305" y="371" class="pillt" text-anchor="middle">2 · SAST (28 rules)</text>
+    <rect class="pill" x="400" y="352" width="170" height="30" rx="15"/>
+    <text x="485" y="371" class="pillt" text-anchor="middle">3 · Confidence gate</text>
+    <rect class="pill" x="590" y="352" width="115" height="30" rx="15"/>
+    <text x="647" y="371" class="pillt" text-anchor="middle">4 · SCA (OSV)</text>
+    <rect class="pill" x="725" y="352" width="115" height="30" rx="15"/>
+    <text x="782" y="371" class="pillt" text-anchor="middle">5 · NVD enrich</text>
+  </g>
+  <path class="flow" d="M210 367 L228 367"/>
+  <path class="flow" d="M380 367 L398 367"/>
+  <path class="flow" d="M570 367 L588 367"/>
+  <path class="flow" d="M705 367 L723 367"/>
+
+  <text x="60" y="410" class="lbl">Network is used only in steps 4–5 (api.osv.dev, NVD). --offline / the Offline switch skips both; code findings still complete.</text>
+  <text x="60" y="430" class="lbl">Reports: text · markdown · json (ScanResult.to_dict) · sarif 2.1.0 · self-contained html.</text>
+  <text x="60" y="450" class="lbl">Cache: OSV/NVD responses on disk for 24 h under ~/.security-preview/cache/ — repeat scans are fast and work offline.</text>
+</svg>

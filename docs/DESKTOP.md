@@ -46,7 +46,7 @@ binds `127.0.0.1` only and works offline.
 | Action | How |
 |---|---|
 | Choose what to scan | **Choose folder…** → native OS dialog → any directory, any drive |
-| Options | `Offline`, `Scan dependencies`, `Min confidence` in the bar |
+| Options | `Offline`, `Scan dependencies`, `Min confidence` in the bar — hover any of them (or the `local only` badge) for a tooltip explaining what it does |
 | Run | **Scan** (disabled until a folder is chosen) |
 | Read a finding | click a row → detail drawer with remediation |
 | Save a report | `Download ▾` → `.json` in-app; `.md` / `.sarif` / `.html` via the CLI |

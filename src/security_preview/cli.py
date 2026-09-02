@@ -238,6 +238,17 @@ _COMMANDS = {
 
 
 def main(argv: list[str] | None = None) -> int:
+    # Reports carry non-ASCII (severity emoji, box-drawing, arrows). A legacy
+    # console codepage (cp1252 on Windows) would otherwise raise
+    # UnicodeEncodeError when the report is written to stdout.
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            try:
+                reconfigure(encoding="utf-8")
+            except (ValueError, OSError):  # pragma: no cover - defensive
+                pass
+
     parser = _build_parser()
     args = parser.parse_args(argv)
     return _COMMANDS[args.command](args)

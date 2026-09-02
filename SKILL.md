@@ -111,3 +111,9 @@ to confirm the install is healthy.
 `PreToolUse` guard that blocks `git commit` when a new CRITICAL finding appears.
 See `docs/USAGE.md` for installation. Editor integration (Cursor and similar) is
 covered in `docs/CURSOR.md`.
+
+## See also
+
+The repo [`README.md`](README.md) is the full overview — the three versions
+(browser/desktop app, CLI, this skill) side by side, with screenshots and an
+architecture diagram.
