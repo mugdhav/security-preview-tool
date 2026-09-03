@@ -57,9 +57,11 @@ gate → dependency scan (OSV) → NVD enrichment**.
 
 ## 1 · Browser / Desktop app
 
-Start it with `security-preview serve` (opens your browser) or
-`security-preview serve --desktop` / the packaged installer (native window). The
-UI ships zero external resources and binds `127.0.0.1` only.
+The packaged desktop app is called **Vulnascan** — the same engine with a
+double-click installer and app icon. Start it with `security-preview serve`
+(opens your browser), `security-preview serve --desktop` / `vulnascan-desktop`
+(native window), or the installer. The UI ships zero external resources and binds
+`127.0.0.1` only.
 
 ### Empty state
 

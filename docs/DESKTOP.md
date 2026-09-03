@@ -1,6 +1,6 @@
-# security-preview — Desktop app
+# Vulnascan — the security-preview desktop app
 
-The desktop app is the **no-Python, no-terminal, no-config** way to run
+**Vulnascan** is the **no-Python, no-terminal, no-config** way to run
 security-preview:
 
 > Double-click the icon → a window opens → click **Choose folder…** → pick any
@@ -15,8 +15,8 @@ binds `127.0.0.1` only and works offline.
 
 ### Windows
 
-1. Download `security-preview-<version>.msi` (installer) **or**
-   `security-preview.exe` (portable, no install).
+1. Download `Vulnascan-<version>.msi` (installer) **or** `vulnascan.exe`
+   (portable, no install) / `vulnascan-setup-<version>.exe` (Inno installer).
 2. Run it. The installer adds a **Start-Menu** and **Desktop** shortcut.
 3. First launch: if Windows SmartScreen shows *"Windows protected your PC"* on an
    unsigned build, click **More info → Run anyway**. (Signed builds show the
@@ -27,13 +27,13 @@ binds `127.0.0.1` only and works offline.
 
 ### macOS
 
-1. Open `security-preview-<version>.dmg`, drag the app to **Applications**.
+1. Open `Vulnascan-<version>.dmg`, drag the app to **Applications**.
 2. First launch on an unsigned build: **right-click → Open → Open**, or
    *System Settings → Privacy & Security → Open Anyway*.
 
 ### Linux
 
-1. `chmod +x security-preview-<version>.AppImage && ./security-preview-<version>.AppImage`
+1. `chmod +x Vulnascan-<version>.AppImage && ./Vulnascan-<version>.AppImage`
    — **or** install the `.deb` / `.rpm`.
 2. The AppImage bundles its Python; the host needs a WebKitGTK runtime
    (`gir1.2-webkit2-4.1` on Debian/Ubuntu, `webkit2gtk` on Fedora). If the
@@ -58,15 +58,14 @@ rejected.
 
 ### Explorer / Finder right-click (when installed)
 
-`security-preview-desktop --scan "<folder>"` opens the window pre-pointed at that
-folder and starts scanning.
+`vulnascan-desktop --scan "<folder>"` (alias: `security-preview-desktop`) opens
+the window pre-pointed at that folder and starts scanning.
 
-On Windows, the **Inno Setup** installer
-(`security-preview-setup-<version>.exe`) offers a checkbox *"Add 'Scan with
-security-preview' to the folder right-click menu"*. When ticked it writes
-`HKCU\Software\Classes\Directory\shell\SecurityPreview` (and the `Background`
-verb for right-clicking inside a folder), both running
-`security-preview.exe --scan "%V"`. The uninstaller removes them.
+On Windows, the **Inno Setup** installer (`vulnascan-setup-<version>.exe`) offers
+a checkbox *"Add 'Scan with Vulnascan' to the folder right-click menu"*. When
+ticked it writes `HKCU\Software\Classes\Directory\shell\SecurityPreview` (and the
+`Background` verb for right-clicking inside a folder), both running
+`vulnascan.exe --scan "%V"`. The uninstaller removes them.
 
 For a portable copy, edit the two exe paths in
 `resources/installer/context-menu.reg` and double-click it;
@@ -95,9 +94,8 @@ without it, `serve` uses the system browser.
 ```
 python -m pip install -e ".[package]"      # pywebview + briefcase + pyinstaller
 
-python scripts/make_icon_master.py         # (re)draw the placeholder icon master
 python scripts/build_desktop.py check      # launcher smoke test (no network)
-python scripts/build_desktop.py icons      # regenerate icons from the 1024² master
+python scripts/build_desktop.py icons      # fan resources/icons/vulnascan.png out to .icns + PNG ladder
 python scripts/build_desktop.py installer  # Briefcase installer for this OS
 python scripts/build_desktop.py portable   # one-file PyInstaller .exe
 python scripts/build_desktop.py inno       # Windows: Inno Setup installer (needs iscc)

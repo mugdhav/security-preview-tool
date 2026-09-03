@@ -124,7 +124,7 @@ jobs:
         shell: pwsh
         run: |
           choco install innosetup --no-progress -y
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" resources/installer/security-preview.iss
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" resources/installer/vulnascan.iss
 
       # --- Windows: Authenticode-sign every artifact (dormant) ---------------
       - name: Sign Windows artifacts
@@ -135,7 +135,7 @@ jobs:
           [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_PFX_BASE64))
           $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe" |
             Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
-          Get-ChildItem dist -Include *.msi,security-preview*.exe,security-preview-setup*.exe -Recurse |
+          Get-ChildItem dist -Include *.msi,vulnascan*.exe,vulnascan-setup*.exe -Recurse |
             ForEach-Object {
               & $signtool sign /f $pfx /p $env:WINDOWS_PFX_PASSWORD `
                 /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 $_.FullName
@@ -144,14 +144,14 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: security-preview-${{ matrix.target }}
+          name: vulnascan-${{ matrix.target }}
           path: |
             dist/*.msi
             dist/*.dmg
             dist/*.pkg
             dist/*.AppImage
             dist/*.deb
-            dist/security-preview*.exe
+            dist/vulnascan*.exe
 
   release:
     needs: build

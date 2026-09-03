@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Build helpers for the security-preview desktop app.
+"""Build helpers for the Vulnascan desktop app (the security-preview engine).
 
 Subcommands
 -----------
-    python scripts/build_desktop.py icons        regenerate per-OS icon sets
-                                                 from resources/icons/security-preview.png
+    python scripts/build_desktop.py icons        derive the .icns + Linux PNG
+                                                 ladder from resources/icons/
+                                                 vulnascan.png (the .png master
+                                                 and .ico are hand-authored)
     python scripts/build_desktop.py portable     one-file PyInstaller build
     python scripts/build_desktop.py installer     Briefcase installer for this OS
     python scripts/build_desktop.py inno          Inno Setup installer (Windows;
@@ -24,7 +26,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ICON_DIR = ROOT / "resources" / "icons"
-MASTER = ICON_DIR / "security-preview.png"
+MASTER = ICON_DIR / "vulnascan.png"
 
 _PNG_LADDER = (16, 32, 48, 64, 128, 256, 512)
 
@@ -46,16 +48,21 @@ def cmd_icons(_argv: list[str]) -> int:
 
     img = Image.open(MASTER).convert("RGBA")
 
+    # vulnascan.png (master) and vulnascan.ico are hand-authored and checked in as
+    # the source of truth; this command only derives the formats we don't hand-make.
     for size in _PNG_LADDER:
-        out = ICON_DIR / f"security-preview-{size}.png"
+        out = ICON_DIR / f"vulnascan-{size}.png"
         img.resize((size, size), Image.LANCZOS).save(out)
         print("wrote", out.relative_to(ROOT))
 
-    ico = ICON_DIR / "security-preview.ico"
-    img.save(ico, sizes=[(s, s) for s in (16, 32, 48, 64, 128, 256)])
-    print("wrote", ico.relative_to(ROOT))
+    ico = ICON_DIR / "vulnascan.ico"
+    if ico.is_file():
+        print("kept  ", ico.relative_to(ROOT), "(hand-authored; not regenerated)")
+    else:
+        img.save(ico, sizes=[(s, s) for s in (16, 32, 48, 64, 128, 256)])
+        print("wrote", ico.relative_to(ROOT), "(no hand-authored .ico found)")
 
-    icns = ICON_DIR / "security-preview.icns"
+    icns = ICON_DIR / "vulnascan.icns"
     try:
         img.save(icns)
         print("wrote", icns.relative_to(ROOT))
@@ -66,15 +73,15 @@ def cmd_icons(_argv: list[str]) -> int:
 
 
 def cmd_portable(_argv: list[str]) -> int:
-    return _run([sys.executable, "-m", "PyInstaller", "pyinstaller/security-preview.spec"])
+    return _run([sys.executable, "-m", "PyInstaller", "pyinstaller/vulnascan.spec"])
 
 
 def cmd_inno(_argv: list[str]) -> int:
     import shutil
 
-    exe = ROOT / "dist" / ("security-preview.exe" if sys.platform == "win32" else "security-preview")
+    exe = ROOT / "dist" / ("vulnascan.exe" if sys.platform == "win32" else "vulnascan")
     if not exe.exists():
-        print("run 'build_desktop.py portable' first (missing dist/security-preview.exe)",
+        print("run 'build_desktop.py portable' first (missing dist/vulnascan.exe)",
               file=sys.stderr)
         return 1
     iscc = shutil.which("iscc") or shutil.which("ISCC")
@@ -82,7 +89,7 @@ def cmd_inno(_argv: list[str]) -> int:
         print("Inno Setup not found: install v6 and put 'iscc' on PATH "
               "(https://jrsoftware.org/isdl.php)", file=sys.stderr)
         return 1
-    return _run([iscc, "resources/installer/security-preview.iss"])
+    return _run([iscc, "resources/installer/vulnascan.iss"])
 
 
 def cmd_installer(argv: list[str]) -> int:

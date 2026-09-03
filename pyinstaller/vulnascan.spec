@@ -1,9 +1,9 @@
 # PyInstaller spec for the portable, no-install desktop build.
 #
 #   python -m pip install -e ".[package]"
-#   pyinstaller pyinstaller/security-preview.spec
+#   pyinstaller pyinstaller/vulnascan.spec
 #
-# Output: dist/security-preview(.exe) -- a single file that opens the native
+# Output: dist/vulnascan(.exe) -- a single file that opens the native
 # window. Used for a quick portable download and as a CI smoke check; the
 # shipping installers come from Briefcase (see pyproject [tool.briefcase]).
 from pathlib import Path
@@ -46,11 +46,11 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name="security-preview",
+    name="vulnascan",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     console=False,
-    icon=str(_root / "resources" / "icons" / "security-preview.ico"),
+    icon=str(_root / "resources" / "icons" / "vulnascan.ico"),
 )

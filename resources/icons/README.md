@@ -1,27 +1,34 @@
 # App icons
 
-`security-preview.png` (1024×1024) is the **master**. Everything else in this
-folder is generated from it:
+The Vulnascan mark: a magnifier over two bars in the UI's terracotta accent
+(`#d97757`).
 
-| Name | Platform |
-|---|---|
-| `security-preview.ico` | Windows |
-| `security-preview.icns` | macOS |
-| `security-preview-16.png` … `-512.png` | Linux PNG ladder |
+| Name | Platform | Source |
+|---|---|---|
+| `vulnascan.png` | 1024² master / Linux base | **hand-authored** |
+| `vulnascan.ico` | Windows | **hand-authored** (multi-size) |
+| `vulnascan.icns` | macOS | derived from `vulnascan.png` |
+| `vulnascan-16.png` … `-512.png` | Linux PNG ladder | derived from `vulnascan.png` |
 
-Briefcase reads them via `icon = "resources/icons/security-preview"` in
-`pyproject.toml`; PyInstaller reads the `.ico` directly.
+`vulnascan.png` and `vulnascan.ico` are the checked-in source of truth — edit or
+replace them directly. The `.icns` and the PNG ladder are generated.
 
-## Regenerate
+The earlier `security-preview*` placeholder set (shield + magnifier) was retired
+in the Vulnascan rebrand; recover it from git history if ever needed.
+
+## Who reads what
+
+- **Briefcase** — `icon = "resources/icons/vulnascan"` in `pyproject.toml`; it
+  appends the per-OS suffix (`.ico` / `.icns` / `vulnascan-<size>.png`).
+- **PyInstaller** — `pyinstaller/vulnascan.spec` embeds `vulnascan.ico` in the
+  portable `vulnascan.exe`; the Explorer right-click verb and the uninstaller
+  pick the icon up from that exe.
+
+## Regenerate the derived files
 
 ```
-python scripts/make_icon_master.py       # (re)draw the placeholder master
-python scripts/build_desktop.py icons     # fan out to .ico / .icns / PNG ladder
+python scripts/build_desktop.py icons     # vulnascan.png -> .icns + PNG ladder
 ```
 
-Both need Pillow (`python -m pip install pillow`).
-
-The current master is a **placeholder** — a shield holding a magnifier in the
-UI's terracotta accent (`#d97757`), drawn by `scripts/make_icon_master.py`.
-Replace `security-preview.png` with a designed 1024² logo and re-run
-`build_desktop.py icons`; delete `make_icon_master.py` once a real logo lands.
+Needs Pillow (`python -m pip install pillow`). This leaves `vulnascan.png` and a
+hand-authored `vulnascan.ico` untouched; re-run it whenever the master changes.

@@ -1,6 +1,6 @@
 Windows Registry Editor Version 5.00
 
-; Removes the "Scan with security-preview" folder right-click entries added by
+; Removes the "Scan with Vulnascan" folder right-click entries added by
 ; context-menu.reg. Double-click to apply. (The Inno Setup uninstaller does this
 ; for you.)
 

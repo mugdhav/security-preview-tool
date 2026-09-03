@@ -20,18 +20,19 @@ Reads with: `security-preview-plan.md` (tool behaviour), `security-preview-desig
   `serve --desktop`), `POST /api/pick-folder` (desktop-mode only),
   **Choose folder…** button + mode detection + `?path=&autoscan=1` deep link in
   `index.html`. Falls back to the system browser when `pywebview` is absent.
-- **Packaging scaffold**: `[tool.briefcase.*]` tables, `pyinstaller/security-preview.spec`,
+- **Packaging scaffold**: `[tool.briefcase.*]` tables, `pyinstaller/vulnascan.spec`,
   `scripts/build_desktop.py` (`check` / `icons` / `portable` / `installer` / `inno`),
-  `scripts/make_icon_master.py`, `.github/workflows/desktop-release.yml`, `docs/DESKTOP.md`.
-- **D3 (partial)**: placeholder 1024² icon master + generated `.ico` / `.icns` /
-  PNG ladder in `resources/icons/`. Real designed logo + on-OS installer builds
-  still outstanding.
+  `.github/workflows/desktop-release.yml`, `docs/DESKTOP.md`.
+- **D3**: the **Vulnascan** rebrand landed — `resources/icons/vulnascan.png` 1024²
+  master + generated `.ico` / `.icns` / PNG ladder in `resources/icons/`; the app,
+  window title, installers and right-click verb all read "Vulnascan". On-OS
+  installer builds still outstanding.
 - **D4 (scaffolded)**: CI signing steps for Windows Authenticode (`signtool`) and
   Apple Developer ID + notarization (`notarytool` / `stapler`) are wired but
   **dormant** — each no-ops until its repo secret is set. Cert procurement is the
   only blocker.
-- **D5 (installer side)**: `resources/installer/security-preview.iss` (Inno Setup)
-  ships the portable exe with an optional *"Scan with security-preview"* folder
+- **D5 (installer side)**: `resources/installer/vulnascan.iss` (Inno Setup)
+  ships the portable exe with an optional *"Scan with Vulnascan"* folder
   right-click verb + clean uninstall; `context-menu.reg` /
   `context-menu-uninstall.reg` for portable copies. The `--scan` launcher hook
   was already done. Briefcase `.msi` verb (WiX fragment) still outstanding.

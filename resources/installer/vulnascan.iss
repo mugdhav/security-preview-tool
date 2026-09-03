@@ -1,18 +1,18 @@
 ; Inno Setup script for the portable-exe install route.
 ;
 ;   1. build the one-file exe:   python scripts/build_desktop.py portable
-;   2. compile this script:      iscc resources/installer/security-preview.iss
+;   2. compile this script:      iscc resources/installer/vulnascan.iss
 ;                                (Inno Setup 6: https://jrsoftware.org/isdl.php)
 ;
-; Output: dist/security-preview-setup-<version>.exe  -- an installer with
+; Output: dist/vulnascan-setup-<version>.exe  -- an installer with
 ; Start-Menu + optional desktop shortcut, an optional folder right-click verb,
 ; and a clean uninstaller. The signed Briefcase .msi is the primary Windows
 ; artifact; this is the no-MSI alternative.
 
-#define AppName "security-preview"
+#define AppName "Vulnascan"
 #define AppVersion "0.1.0"
-#define AppPublisher "security-preview contributors"
-#define AppExe "security-preview.exe"
+#define AppPublisher "Vulnascan contributors"
+#define AppExe "vulnascan.exe"
 
 [Setup]
 AppId={{CE694A2C-655F-4B61-911A-34D7698D75CB}}
@@ -24,7 +24,7 @@ DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
 UninstallDisplayIcon={app}\{#AppExe}
 OutputDir=..\..\dist
-OutputBaseFilename=security-preview-setup-{#AppVersion}
+OutputBaseFilename=vulnascan-setup-{#AppVersion}
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern

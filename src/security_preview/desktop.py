@@ -1,4 +1,4 @@
-"""Desktop launcher for security-preview.
+"""Desktop launcher for Vulnascan (the security-preview engine).
 
 Turns ``security-preview serve`` into a zero-config, double-click app: pick a
 free ``127.0.0.1`` port, run the FastAPI app on a daemon thread, wait for
@@ -11,8 +11,8 @@ opening the system browser and blocking on the server, so ``serve`` keeps
 working with no extra dependency.
 
 Entry points:
-    security-preview-desktop            console script
-    security-preview serve --desktop    delegates here (handy for dev)
+    vulnascan-desktop / security-preview-desktop   console script
+    security-preview serve --desktop               delegates here (handy for dev)
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ import urllib.parse
 import urllib.request
 
 _HEALTHZ_TIMEOUT = 10.0
-_WINDOW_TITLE = "security-preview"
+_WINDOW_TITLE = "Vulnascan"
 _WINDOW_SIZE = (1100, 760)
 _WINDOW_MIN_SIZE = (900, 600)
 
@@ -64,8 +64,8 @@ def _build_url(port: int, scan_path: str | None) -> str:
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        prog="security-preview-desktop",
-        description="Open the security-preview desktop window.",
+        prog="vulnascan-desktop",
+        description="Open the Vulnascan desktop window.",
     )
     parser.add_argument(
         "--scan",

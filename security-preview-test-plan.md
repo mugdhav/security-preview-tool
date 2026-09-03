@@ -276,10 +276,10 @@ Fresh agent session with the skill installed; observe whether it invokes `securi
 - PKG-03: `report/templates/report.html.j2` is packaged (hatch `packages=["src/security_preview"]`) — `--format html` works from an installed wheel, not just the source tree.
 - PKG-04: `import security_preview` exposes the assembled API (`scan` via `security_preview.scan`, `render`, `FORMATS`, models, `ScanConfig`); `from security_preview.scan import scan` works.
 - PKG-05: `ruff check .` clean; `mypy src` clean.
-- PKG-06: `pip install "security-preview[desktop]"` adds `pywebview`; `security-preview-desktop` console script on PATH; `python -m security_preview` opens the window.
-- PKG-07: `briefcase create/build/package <windows|macOS|linux>` produce an installer with a shortcut + icon; `scripts/build_desktop.py portable` produces a one-file `.exe`; `… inno` wraps it as `security-preview-setup-*.exe`. Bundled deps pinned; `security-preview scan .` run on the build tree in CI before packaging (dogfood). **[CI: `.github/workflows/desktop-release.yml`]**
+- PKG-06: `pip install "security-preview[desktop]"` adds `pywebview`; the `vulnascan-desktop` / `security-preview-desktop` console scripts are on PATH; `python -m security_preview` opens the window (titled **Vulnascan**).
+- PKG-07: `briefcase create/build/package <windows|macOS|linux>` produce a **Vulnascan**-named installer with a shortcut + icon; `scripts/build_desktop.py portable` produces `dist/vulnascan.exe`; `… inno` wraps it as `vulnascan-setup-*.exe`. Bundled deps pinned; `security-preview scan .` run on the build tree in CI before packaging (dogfood). **[CI: `.github/workflows/desktop-release.yml`]**
 - PKG-08: `server/static/index.html` is packaged in the wheel and the frozen bundle — `GET /` works from an installed wheel and from the Briefcase/PyInstaller app, not just the source tree.
-- PKG-09: `scripts/make_icon_master.py` → `build_desktop.py icons` regenerates `resources/icons/security-preview.{png,ico,icns}` + the PNG ladder; the app tile / taskbar / titlebar icon shows the shield mark (legible at 16 px). **[auto: files exist; manual: on-OS look]**
+- PKG-09: `resources/icons/vulnascan.png` (1024²) + `vulnascan.ico` ship as the real Vulnascan mark; `build_desktop.py icons` fans them out to `vulnascan.icns` + the PNG ladder; the app tile / taskbar / titlebar icon shows the magnifier mark (legible at 16 px). **[auto: files exist; manual: on-OS look]**
 - PKG-10: CI signing steps stay dormant with no secrets (build ships unsigned, green); with `WINDOWS_PFX_BASE64` / the `APPLE_*` set, artifacts come out Authenticode-signed / Developer-ID-signed + notarized + stapled. **[CI]**
 
 ---

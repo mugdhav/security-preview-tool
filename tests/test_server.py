@@ -176,7 +176,7 @@ def test_index_served_as_html(client):
     r = client.get("/")
     assert r.status_code == 200
     assert "text/html" in r.headers["content-type"]
-    assert "<title>security-preview</title>" in r.text
+    assert "<title>Vulnascan</title>" in r.text
 
 
 def test_index_has_no_external_resource_refs(client):
