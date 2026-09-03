@@ -130,22 +130,24 @@ The packaged double-click app (installers, no Python) is covered in
 ```
 security-preview scan <path> [--format text|markdown|json|sarif|html]
                              [--offline] [--no-sca]
-                             [--min-confidence HIGH|MEDIUM|LOW] [--out FILE]
+                             [--min-confidence low|medium|high] [--out FILE]
 ```
 
 ```console
 $ security-preview scan --help
 usage: security-preview scan [-h] [--format FORMAT] [--offline] [--no-sca]
-                             [--min-confidence {HIGH,MEDIUM,LOW}] [--out OUT]
+                             [--min-confidence {low,medium,high}] [--out OUT]
                              path
 
   --format FORMAT       report format: text | markdown | json | sarif | html
   --offline             skip all network access (NVD + OSV)
   --no-sca              skip dependency (SCA) scanning
-  --min-confidence {HIGH,MEDIUM,LOW}
-                        drop findings below this confidence (default: MEDIUM)
+  --min-confidence {low,medium,high}
+                        drop findings below this confidence (default: medium)
   --out OUT             write the report to this file instead of stdout
 ```
+
+`--min-confidence` is case-insensitive; `HIGH` and `high` are equivalent.
 
 **Exit codes:** `0` — completed, no CRITICAL findings · `1` — completed with ≥1
 CRITICAL finding (the report is still emitted) · `2` — usage / IO error (bad
@@ -155,7 +157,7 @@ changes the exit code; it only marks the report **PARTIAL**.
 ### Text report (default)
 
 ```console
-$ security-preview scan ./service --offline --min-confidence HIGH
+$ security-preview scan ./service --offline --min-confidence high
 security-preview report v0.1.0
 target:  ./service
 scanned: 2026-09-02 20:20 UTC | 0.0s | deterministic, non-LLM

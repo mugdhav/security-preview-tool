@@ -4,7 +4,7 @@ Subcommands::
 
     security-preview scan <path> [--format text|markdown|json|sarif|html]
                                  [--offline] [--no-sca]
-                                 [--min-confidence HIGH|MEDIUM|LOW] [--out FILE]
+                                 [--min-confidence low|medium|high] [--out FILE]
     security-preview serve [--port PORT] [--open|--no-open] [--desktop]
     security-preview selftest
 
@@ -36,6 +36,20 @@ _CONFIDENCES = ("HIGH", "MEDIUM", "LOW")
 _DEFAULT_PORT = 0
 
 
+def _confidence_arg(value: str) -> str:
+    """Accept ``--min-confidence`` case-insensitively; normalise to upper-case.
+
+    The docs, the SKILL and the browser API all use ``low|medium|high``; keep the
+    CLI in step while still accepting the upper-case form.
+    """
+    normalised = value.strip().upper()
+    if normalised not in _CONFIDENCES:
+        raise argparse.ArgumentTypeError(
+            f"invalid choice: {value!r} (choose from low, medium, high)"
+        )
+    return normalised
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="security-preview",
@@ -62,9 +76,10 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_scan.add_argument(
         "--min-confidence",
-        choices=_CONFIDENCES,
+        type=_confidence_arg,
+        metavar="{low,medium,high}",
         default=None,
-        help="drop findings below this confidence (default: MEDIUM)",
+        help="drop findings below this confidence (default: medium)",
     )
     p_scan.add_argument(
         "--out",

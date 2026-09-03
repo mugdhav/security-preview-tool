@@ -95,6 +95,29 @@ def test_min_confidence_flag_filters_findings(monkeypatch, tmp_path, make_findin
     assert findings[0].confidence is Confidence.HIGH
 
 
+@pytest.mark.parametrize("value", ["high", "High", "HIGH"])
+def test_min_confidence_is_case_insensitive(monkeypatch, tmp_path, make_scan_result, value):
+    """The docs use ``low|medium|high``; the CLI accepts any case."""
+    seen = {}
+
+    def fake_scan(path, cfg):
+        seen["cfg"] = cfg
+        return make_scan_result(findings=[])
+
+    monkeypatch.setattr(cli.scan_mod, "scan", fake_scan)
+    monkeypatch.setattr(cli.renderers, "render", lambda result, fmt: "")
+    rc = cli.main(["scan", str(tmp_path), "--min-confidence", value])
+    assert rc == 0
+    assert seen["cfg"].min_confidence is Confidence.HIGH
+
+
+def test_bad_min_confidence_exits_2(tmp_path, capsys):
+    with pytest.raises(SystemExit) as exc:
+        cli.main(["scan", str(tmp_path), "--min-confidence", "sorta"])
+    assert exc.value.code == 2
+    assert "choose from low, medium, high" in capsys.readouterr().err
+
+
 def test_format_is_passed_to_renderer(monkeypatch, tmp_path, make_scan_result):
     seen = {}
     monkeypatch.setattr(cli.scan_mod, "scan", lambda path, cfg: make_scan_result(findings=[]))
