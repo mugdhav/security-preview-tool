@@ -1,0 +1,226 @@
+/* vulnascan landing page — "Classical" design system (Paper scheme).
+   Tokens and the .plate rule are lifted verbatim from the design handoff;
+   layout values are the prototype's inline styles moved into classes unchanged. */
+
+:root {
+  --color-bg: #f3f2f2;
+  --color-surface: #eae9e9;
+  --color-text: #201f1d;
+  --color-accent: #b68235;
+  --color-accent-600: #a06f24;
+  --color-accent-700: #7d5411;
+  --color-divider: color-mix(in srgb, #201f1d 16%, transparent);
+
+  --font-heading: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-body: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-md: 4px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); text-wrap: pretty; }
+img { display: block; max-width: 100%; }
+
+a { color: var(--color-accent-700); text-decoration: none; text-underline-offset: 3px; }
+a:hover { color: var(--color-accent-600); }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+
+/* — plate treatment (verbatim from the handoff stylesheet) — */
+.plate {
+  filter: sepia(0.22) saturate(0.82) contrast(1.05);
+  box-sizing: border-box;
+  border: 6px solid var(--color-surface);
+  outline: 1px solid var(--color-divider);
+}
+
+/* ─────────────────────────────  page shell  ───────────────────────────── */
+.page {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* — nav — */
+.nav {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 13px clamp(20px, 4vw, 48px);
+  border-bottom: 1px solid var(--color-divider);
+}
+.brand { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+.brand img { width: 24px; height: 24px; }
+.wordmark {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: .01em;
+}
+.nav-doc {
+  font-size: 12.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.btn-github {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 13.5px;
+  line-height: 1.2;
+  color: var(--color-text);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  padding: 8px 15px;
+}
+.btn-github:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+/* — content band — */
+.band {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(18px, 3.2vh, 44px);
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: clamp(20px, 3.4vh, 52px) clamp(20px, 4vw, 48px);
+  box-sizing: border-box;
+}
+
+.hero { display: flex; flex-direction: column; gap: clamp(10px, 1.6vh, 20px); }
+.hero h1 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: min(4.55vw, 54px);
+  line-height: 1.07;
+  letter-spacing: -0.012em;
+  margin: 0 0 0 -0.042em;
+  white-space: nowrap;
+}
+.hero p {
+  font-size: min(1.6vw, 17px);
+  line-height: 1.5;
+  margin: 0;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+}
+
+.rule { flex: none; height: 1px; border: 0; margin: 0; background: var(--color-divider); }
+
+.flavours {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.4vh, 30px);
+}
+.kicker {
+  display: block;
+  font-size: 12.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--color-accent-700);
+  font-feature-settings: 'tnum';
+}
+
+.grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr);
+  gap: clamp(26px, 3.4vw, 56px);
+  margin-left: calc(-1 * clamp(26px, 3.4vw, 56px) - 1px);
+}
+
+/* — flavour card — */
+.card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: clamp(9px, 1.4vh, 16px);
+  padding-left: clamp(26px, 3.4vw, 56px);
+  border-left: 1px solid var(--color-divider);
+}
+.card--first { border-left: 1px solid transparent; }
+
+.card-head { display: flex; align-items: baseline; gap: 10px; }
+.num {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--color-accent);
+  font-feature-settings: 'tnum';
+}
+.card-head h2 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(22px, 1.9vw, 28px);
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+.card-copy {
+  font-size: 14.5px;
+  line-height: 1.55;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+}
+
+.card .plate {
+  flex: none;
+  height: clamp(84px, 21vh, 200px);
+  margin-top: 2px;
+}
+.card .plate img { width: 100%; height: 100%; object-fit: cover; }
+
+.foot {
+  margin-top: auto;
+  padding-top: clamp(9px, 1.4vh, 15px);
+  border-top: 1px solid var(--color-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.foot-link { font-family: var(--font-heading); font-weight: 600; font-size: 13.5px; }
+.foot-code { font-family: var(--font-mono); font-size: 13px; line-height: 1.4; color: var(--color-text); }
+.foot-meta { font-size: 12px; color: color-mix(in srgb, var(--color-text) 60%, transparent); }
+
+/* — footer — */
+.footer {
+  flex: none;
+  border-top: 1px solid var(--color-divider);
+  padding: 11px clamp(20px, 4vw, 48px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  align-items: center;
+  font-size: 12px;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+.footer-note { margin-right: auto; }
+.footer-note a { color: inherit; text-decoration: underline; }
+.footer-note a:hover { color: var(--color-accent-700); }
+
+/* ───────────  below ~700px: stack, drop the column rules, allow scroll  ─────────── */
+@media (max-width: 700px) {
+  .page { height: auto; min-height: 100vh; }
+  .grid { grid-template-columns: 1fr; gap: 36px; margin-left: 0; }
+  .card { border-left: 0; padding-left: 0; max-width: 62ch; }
+  .hero h1, .hero p { white-space: normal; }
+  .hero h1 { font-size: 30px; }
+  .hero p { font-size: 15.5px; }
+  .card .plate { height: 210px; }
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>vulnascan — security errata for your codebase</title>
+<meta name="description" content="vulnascan audits a repository for security vulnerabilities and returns them as errata — file, line, severity, reason. Deterministic, non-LLM. Desktop app, CLI, or coding-agent skill.">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lora:wght@400;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <span class="brand">
+      <img src="assets/mark.svg" alt="">
+      <span class="wordmark">vulnascan</span>
+    </span>
+    <a class="nav-doc" href="https://github.com/mugdhav/security-preview-tool/tree/main/docs">Documentation</a>
+    <a class="btn-github" href="https://github.com/mugdhav/security-preview-tool">GitHub</a>
+  </nav>
+
+  <div class="band">
+
+    <div class="hero">
+      <h1>Read the codebase like a proofreader reads a page.</h1>
+      <p>vulnascan audits a repository for security vulnerabilities and returns them as errata — file, line, severity, reason.</p>
+    </div>
+
+    <hr class="rule">
+
+    <div class="flavours">
+      <span class="kicker">Three flavours, one engine</span>
+
+      <div class="grid">
+
+        <div class="card card--first">
+          <div class="card-head">
+            <span class="num">01</span>
+            <h2>Desktop app</h2>
+          </div>
+          <p class="card-copy">A double-click installer for macOS, Windows and Linux. No terminal.</p>
+          <div class="plate">
+            <img src="assets/plate-desktop.png" alt="The vulnascan desktop app showing a completed scan, findings grouped by severity with counts in the margin.">
+          </div>
+          <div class="foot">
+            <a class="foot-link" href="https://github.com/mugdhav/security-preview-tool/blob/main/docs/DESKTOP.md">Download &amp; install</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <span class="num">02</span>
+            <h2>CLI tool</h2>
+          </div>
+          <p class="card-copy">Install from the repo, then scan any directory from the shell.</p>
+          <div class="plate">
+            <img src="assets/plate-cli.svg" alt="A terminal running security-preview scan: a severity summary, a command-injection finding at command_injection.py:7, and exit code 1.">
+          </div>
+          <div class="foot">
+            <code class="foot-code">security-preview scan .</code>
+            <a class="foot-link" href="https://github.com/mugdhav/security-preview-tool/blob/main/docs/USAGE.md">Install</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <span class="num">03</span>
+            <h2>Harness skill</h2>
+          </div>
+          <p class="card-copy">Add SKILL.md to Claude Code or Cursor, then just ask.</p>
+          <div class="plate">
+            <img src="assets/plate-skill.svg" alt="A Claude Code session running the security-preview skill: 21 findings summarised, and a proposed subprocess.run fix for a command-injection line.">
+          </div>
+          <div class="foot">
+            <code class="foot-code">/security-preview</code>
+            <a class="foot-link" href="https://github.com/mugdhav/security-preview-tool/blob/main/SKILL.md">Set up</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-note">MIT licensed · <a href="https://github.com/mugdhav/security-preview-tool#supported-languages">14 languages</a> · analysis runs locally, nothing uploaded</span>
+    <a href="https://github.com/mugdhav/security-preview-tool">Repository</a>
+    <a href="https://github.com/mugdhav/security-preview-tool/issues">Report an issue</a>
+  </footer>
+
+</div>
+</body>
+</html>

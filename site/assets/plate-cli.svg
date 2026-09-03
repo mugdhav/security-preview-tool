@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace">
+  <rect width="800" height="450" fill="#14130f"/>
+  <rect width="800" height="30" fill="#211f1a"/>
+  <circle cx="20" cy="15" r="5" fill="#c96a4e"/>
+  <circle cx="38" cy="15" r="5" fill="#c99a4e"/>
+  <circle cx="56" cy="15" r="5" fill="#7fae6f"/>
+  <text x="400" y="19" text-anchor="middle" font-size="12" fill="#8a857b">security-preview — scan</text>
+  <g font-size="13" fill="#eceae3">
+    <text x="20" y="58"><tspan fill="#c99a4e">$</tspan> security-preview scan . --min-confidence high</text>
+    <text x="20" y="94" fill="#b7b2a7">security-preview report v0.1.0</text>
+    <text x="20" y="112" fill="#b7b2a7">target:  .</text>
+    <text x="20" y="130" fill="#8a857b">scanned: 2026-09-03 17:51 UTC | 0.0s | deterministic, non-LLM</text>
+    <text x="20" y="166" fill="#8a857b">SUMMARY</text>
+    <text x="20" y="184"><tspan fill="#8a857b">  </tspan><tspan fill="#d6674e">CRITICAL  7</tspan></text>
+    <text x="20" y="202" fill="#c99a4e">  HIGH      2</text>
+    <text x="20" y="220" fill="#b7b2a7">  MEDIUM    2</text>
+    <text x="20" y="238" fill="#8a857b">  files scanned: 13 | dependencies checked: 0</text>
+    <text x="20" y="274" fill="#d6674e">CRITICAL</text>
+    <text x="20" y="292" fill="#eceae3">  [sast.command-injection] Command Injection</text>
+    <text x="20" y="310" fill="#8a857b">    location:   command_injection.py:7</text>
+    <text x="20" y="328" fill="#8a857b">    cwe:        CWE-78</text>
+    <text x="20" y="346" fill="#8a857b">    vulnerable: <tspan fill="#d6674e">os.system(f"ping {user_input}")</tspan></text>
+    <text x="20" y="364" fill="#8a857b">    secure:     <tspan fill="#7fae6f">subprocess.run(["ping", user_input], shell=False)</tspan></text>
+    <text x="20" y="400"><tspan fill="#c99a4e">$</tspan> echo $?</text>
+    <text x="20" y="418" fill="#eceae3">1</text>
+  </g>
+</svg>

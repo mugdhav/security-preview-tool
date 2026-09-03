@@ -53,6 +53,34 @@ Everything below is identical across all three versions.
 The scan pipeline, in fixed order: **discover files → SAST rules → confidence
 gate → dependency scan (OSV) → NVD enrichment**.
 
+### Supported languages
+
+The pattern rules match against 14 language and config formats (17 file
+extensions). Coverage is deep for the first six and targeted for the rest;
+dependency (CVE) scanning is separate and language-agnostic.
+
+| Language | Extensions | Rule checks |
+|---|---|---|
+| Python | `.py` | 24 |
+| JavaScript | `.js` `.jsx` | 24 |
+| TypeScript | `.ts` `.tsx` | 24 |
+| Java | `.java` | 24 |
+| PHP | `.php` | 23 |
+| Ruby | `.rb` | 17 |
+| Go | `.go` | 14 |
+| C# | `.cs` | 7 |
+| YAML | `.yml` `.yaml` | 3 |
+| JSON | `.json` | 3 |
+| C | `.c` | 1 |
+| C++ | `.cpp` | 1 |
+| HTML | `.html` | 1 |
+| Shell | `.sh` | 1 |
+
+Dependency scanning reads lockfiles for **Python, npm, Go, Ruby and Maven**
+(`requirements.txt`, `poetry.lock`, `Pipfile.lock`, `package-lock.json`,
+`yarn.lock`, `go.mod`, `Gemfile.lock`, `pom.xml`) and matches every pinned
+package against the OSV database.
+
 ---
 
 ## 1 · Browser / Desktop app
