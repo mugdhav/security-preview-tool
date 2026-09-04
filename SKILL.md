@@ -114,6 +114,7 @@ covered in `docs/CURSOR.md`.
 
 ## See also
 
-The repo [`README.md`](README.md) is the full overview — the three versions
-(browser/desktop app, CLI, this skill) side by side, with screenshots and an
-architecture diagram.
+The repo [`README.md`](README.md) is the short overview — what the engine does,
+the supported languages, and the three shapes it ships in. Per-shape docs:
+[`docs/DESKTOP.md`](docs/DESKTOP.md) (desktop app), [`docs/USAGE.md`](docs/USAGE.md)
+(CLI), [`docs/CURSOR.md`](docs/CURSOR.md) (editor / agent integration).

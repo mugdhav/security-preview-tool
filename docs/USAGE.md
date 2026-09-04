@@ -1,4 +1,4 @@
-# security-preview — Usage
+# Vulnascan CLI — `security-preview`
 
 A deterministic, **non-LLM** static security scanner for a local project
 directory. It runs regex + AST pattern rules (SAST) and real dependency CVE
@@ -9,7 +9,50 @@ per-finding remediation. Same tree in, same report out.
   NVD for illustrative CVE examples). `--offline` disables even those.
 - No source code is uploaded anywhere. No language model is involved.
 
+## What a report looks like
+
+```console
+$ security-preview scan ./service --offline --min-confidence high
+security-preview report v0.1.0
+target:  ./service
+scanned: 2026-09-02 20:20 UTC | 0.0s | deterministic, non-LLM
+
+SUMMARY
+  CRITICAL  7
+  HIGH      2
+  MEDIUM    2
+  LOW       0
+  INFO      0
+  DEPS      0  (vulnerable dependencies)
+  files scanned: 13 | dependencies checked: 0
+
+CODE FINDINGS (11)
+
+CRITICAL
+  [sast.command-injection] Command Injection
+    location:   command_injection.py:7
+    cwe:        CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+    category:   Injection
+    confidence: HIGH
+    snippet:
+           | def ping(host):
+           |     os.system("ping -c 1 " + host)
+    what's wrong: User input may be passed to a system shell, allowing arbitrary
+                  command execution on the host.
+    vulnerable:   os.system(f"ping {user_input}")
+    secure:       subprocess.run(["ping", user_input], shell=False)
+```
+
+`--format markdown` emits the same data as GFM (a summary table, severity as
+emoji, one section per finding) for committing into a repo or pasting into a PR;
+`--format html` is one self-contained page. Full breakdown in
+[Reading the report](#reading-the-report).
+
 ## Install
+
+> For the packaged double-click desktop app (no Python), download from the
+> [Releases page](https://github.com/mugdhav/security-preview-tool/releases) —
+> see [`DESKTOP.md`](DESKTOP.md).
 
 ### 1. Bootstrap an isolated environment (recommended)
 
@@ -175,6 +218,41 @@ from the pattern-based code findings.
 | `json` | automation; exactly `ScanResult.to_dict()` — `summary`, `findings`, `dependency_findings`, `errors`, `partial`, `tool_version` |
 | `sarif` | SARIF 2.1.0; upload to a code-scanning dashboard |
 | `html` | one self-contained file — inline CSS, no `<script>`, no web fonts, `prefers-color-scheme` aware, print-friendly |
+
+Markdown (`--format markdown`):
+
+```markdown
+# security-preview report
+
+## Summary
+
+| Severity | Count |
+| --- | --- |
+| 🔴 CRITICAL | 7 |
+| 🟠 HIGH | 2 |
+| 🟡 MEDIUM | 2 |
+| 🔵 LOW | 0 |
+| ⚪ INFO | 0 |
+| Vulnerable dependencies | 0 |
+
+### 🔴 CRITICAL — Command Injection — command_injection.py:7
+...
+```
+
+Vulnerable dependencies, `--format text` excerpt (online scan):
+
+```console
+VULNERABLE DEPENDENCIES
+  MEDIUM    requests 2.25.1 (PyPI)
+    advisories: CVE-2023-32681, CVE-2024-35195, CVE-2024-47081, GHSA-9wx4-h78v-vm56, PYSEC-2023-74, …
+    fixed in:   2.31.0
+    source:     manifests/pip/requirements.txt
+    summary:    Requests vulnerable to .netrc credentials leak via malicious URLs
+  LOW       @babel/core 7.12.3 (npm)
+    advisories: CVE-2026-49356, GHSA-4x5r-pxfx-6jf8
+    fixed in:   7.29.6
+    source:     manifests/npm/package-lock.json
+```
 
 ## Offline mode
 
