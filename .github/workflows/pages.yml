@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "docs/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -25,6 +26,18 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+
+      # The docs pages render Markdown from docs/ at runtime; stage the sources
+      # (and the screenshots they reference) into the published tree.
+      - name: Stage documentation sources
+        run: |
+          mkdir -p site/docs/content/images
+          cp docs/DESKTOP.md site/docs/content/desktop.md
+          cp docs/USAGE.md   site/docs/content/cli.md
+          cp docs/CURSOR.md  site/docs/content/skill.md
+          cp docs/images/*.png site/docs/content/images/ 2>/dev/null || true
+          cp docs/images/*.svg site/docs/content/images/ 2>/dev/null || true
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

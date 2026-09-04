@@ -156,14 +156,6 @@ a:hover { color: var(--color-accent-600); }
 }
 .card--first { border-left: 1px solid transparent; }
 
-.card-head { display: flex; align-items: baseline; gap: 10px; }
-.num {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: 18px;
-  color: var(--color-accent);
-  font-feature-settings: 'tnum';
-}
 .card-head h2 {
   font-family: var(--font-heading);
   font-weight: 400;

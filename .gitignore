@@ -22,3 +22,7 @@ htmlcov/
 Thumbs.db
 .idea/
 .vscode/
+
+# Docs site: Markdown sources staged into the published tree (by
+# .github/workflows/pages.yml, or site/docs/sync.sh for local preview)
+site/docs/content/

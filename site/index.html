@@ -5,9 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f3f2f2">
-<title>vulnascan — security errata for your codebase</title>
-<meta name="description" content="vulnascan audits a repository for security vulnerabilities and returns them as errata — file, line, severity, reason. Deterministic, non-LLM. Desktop app, CLI, or coding-agent skill.">
+<title>vulnascan — deterministic security scanner for your codebase</title>
+<meta name="description" content="vulnascan is a deterministic, non-LLM security scanner for a local codebase: SAST pattern rules plus dependency CVE checks (SCA), each finding with a file, line, severity, and fix. Desktop app, CLI, or coding-agent skill.">
 <link rel="icon" href="assets/favicon.ico">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="vulnascan — deterministic security scanner for your codebase">
+<meta property="og:description" content="vulnascan is a deterministic, non-LLM security scanner for a local codebase: SAST pattern rules plus dependency CVE checks (SCA), each finding with a file, line, severity, and fix. Desktop app, CLI, or coding-agent skill.">
+<meta property="og:image" content="assets/mark-1024.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="assets/mark-1024.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lora:wght@400;600&display=swap">
@@ -21,7 +28,7 @@
       <img src="assets/mark.svg" alt="">
       <span class="wordmark">vulnascan</span>
     </span>
-    <a class="nav-doc" href="https://github.com/mugdhav/security-preview-tool/blob/main/README.md">Documentation</a>
+    <a class="nav-doc" href="docs/">Documentation</a>
     <a class="btn-github" href="https://github.com/mugdhav/security-preview-tool">GitHub</a>
   </nav>
 
@@ -29,7 +36,7 @@
 
     <div class="hero">
       <h1>Read the codebase like a proofreader reads a page.</h1>
-      <p>vulnascan audits a repository for security vulnerabilities and returns them as errata — file, line, severity, reason.</p>
+      <p>vulnascan audits a codebase for vulnerable code and dependencies — each returned as errata: file, line, severity, fix.</p>
     </div>
 
     <hr class="rule">
@@ -41,7 +48,6 @@
 
         <div class="card card--first">
           <div class="card-head">
-            <span class="num">01</span>
             <h2>Desktop app</h2>
           </div>
           <p class="card-copy">A double-click installer for macOS, Windows and Linux. No terminal.</p>
@@ -49,13 +55,12 @@
             <img src="assets/plate-desktop.png" alt="The vulnascan desktop app showing a completed scan, findings grouped by severity with counts in the margin.">
           </div>
           <div class="foot">
-            <a class="foot-link" href="https://github.com/mugdhav/security-preview-tool/blob/main/docs/DESKTOP.md">Download &amp; install</a>
+            <a class="foot-link" href="docs/desktop.html">Download &amp; install</a>
           </div>
         </div>
 
         <div class="card">
           <div class="card-head">
-            <span class="num">02</span>
             <h2>CLI tool</h2>
           </div>
           <p class="card-copy">Install from the repo, then scan any directory from the shell.</p>
@@ -64,14 +69,13 @@
           </div>
           <div class="foot">
             <code class="foot-code">security-preview scan .</code>
-            <a class="foot-link" href="https://github.com/mugdhav/security-preview-tool/blob/main/docs/USAGE.md">Install</a>
+            <a class="foot-link" href="docs/cli.html">Install</a>
           </div>
         </div>
 
         <div class="card">
           <div class="card-head">
-            <span class="num">03</span>
-            <h2>Harness skill</h2>
+            <h2>Coding-agent skill</h2>
           </div>
           <p class="card-copy">Add SKILL.md to Claude Code or Cursor, then just ask.</p>
           <div class="plate">
@@ -79,7 +83,7 @@
           </div>
           <div class="foot">
             <code class="foot-code">/security-preview</code>
-            <a class="foot-link" href="https://github.com/mugdhav/security-preview-tool/blob/main/SKILL.md">Set up</a>
+            <a class="foot-link" href="docs/skill.html">Set up</a>
           </div>
         </div>
 

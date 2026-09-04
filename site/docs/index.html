@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f3f2f2">
+<title>Introducing Vulnascan</title>
+<meta name="description" content="Vulnascan is a deterministic, non-LLM static security scanner for a local codebase: SAST pattern rules plus dependency CVE checks (SCA). Runs as a desktop app, a CLI, or a coding-agent skill.">
+<link rel="icon" href="../assets/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lora:wght@400;600&display=swap">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+<nav class="docnav">
+  <a class="brand" href="index.html"><img src="../assets/mark.svg" alt=""> Vulnascan docs</a>
+  <a class="navlink" href="../index.html">Home</a>
+  <a class="navlink" href="https://github.com/mugdhav/security-preview-tool">GitHub</a>
+</nav>
+
+<main class="wrap">
+  <header class="intro-hero">
+    <h1>Introducing Vulnascan</h1>
+    <p class="lede">
+      Vulnascan is a <strong>deterministic, non-LLM</strong> static security scanner for
+      your application&rsquo;s local project directory. Provide it the directory containing
+      your application code and get a detailed vulnerability report with remediation
+      advice. No model, no randomness &mdash; identical report for identical input in
+      every run.
+    </p>
+  </header>
+
+  <span class="section-kicker">What it does</span>
+  <ul class="points">
+    <li><b>Finds vulnerable code (SAST).</b> A pattern engine &mdash; regex + AST rules
+      &mdash; searches your source for injection, XSS, path traversal, hardcoded secrets,
+      weak crypto, insecure deserialization, SSRF, and around two dozen other
+      vulnerability classes (28 rule types in all). Every finding carries a CWE id and a
+      <em>vulnerable &rarr; secure</em> remediation pair.</li>
+    <li><b>Finds vulnerable dependencies (SCA).</b> It parses your lockfiles and checks
+      every pinned package against the OSV vulnerability database (CVE / GHSA / OSV
+      advisories, with the fixed version and severity). Reported in a separate section
+      from the code findings.</li>
+    <li><b>Produces a report you can act on.</b> <code>text</code>, <code>markdown</code>,
+      <code>json</code>, <code>sarif</code>, or a single self-contained <code>html</code>
+      file &mdash; each finding with its location, a masked code snippet, a plain-language
+      explanation, and the fix. Secrets are masked before they ever reach a report.</li>
+  </ul>
+  <p>
+    The pipeline runs in fixed order &mdash; <strong>discover files &rarr; SAST rules
+    &rarr; confidence gate &rarr; dependency scan (OSV) &rarr; CVE enrichment (NVD)</strong>.
+    A network or parse failure never aborts the scan; it marks the report
+    <strong>PARTIAL</strong> and lists what was skipped, and the code findings are still
+    complete. <code>--offline</code> skips all network and still runs the full SAST pass.
+    OSV/NVD responses are cached on disk for 24&nbsp;h.
+  </p>
+
+  <span class="section-kicker">Three shapes, one engine</span>
+  <p>
+    Vulnascan is free and open source, and ships in three shapes over one shared engine.
+    All three call the same <code>scan(path, ScanConfig) -&gt; ScanResult</code> &mdash;
+    there are no divergent code paths.
+  </p>
+  <div class="cards">
+    <div class="dcard">
+      <h3>Desktop app</h3>
+      <p>Double-click, choose a folder, read a rendered report. No Python, no terminal.</p>
+      <a class="go" href="desktop.html">Read the desktop guide &rarr;</a>
+    </div>
+    <div class="dcard">
+      <h3>CLI</h3>
+      <p><code>security-preview scan &lt;path&gt;</code> &mdash; for terminals and CI, with
+        <code>--format</code>, <code>--offline</code>, <code>--min-confidence</code>, and
+        exit-code gating.</p>
+      <a class="go" href="cli.html">Read the CLI guide &rarr;</a>
+    </div>
+    <div class="dcard">
+      <h3>Coding-agent skill</h3>
+      <p>Claude Code or Cursor run the scan on request and summarise the findings from the
+        JSON report.</p>
+      <a class="go" href="skill.html">Read the skill guide &rarr;</a>
+    </div>
+  </div>
+
+  <span class="section-kicker">Supported languages</span>
+  <p>
+    Pattern rules match <strong>14 languages and config formats</strong> (17 file
+    extensions). Coverage is deep for the first six and targeted for the rest; dependency
+    (CVE) scanning is separate and language-agnostic.
+  </p>
+  <div class="langtable">
+    <table>
+      <thead><tr><th>Language</th><th>Extensions</th><th>Rule checks</th></tr></thead>
+      <tbody>
+        <tr><td>Python</td><td><code>.py</code></td><td>24</td></tr>
+        <tr><td>JavaScript</td><td><code>.js</code> <code>.jsx</code></td><td>24</td></tr>
+        <tr><td>TypeScript</td><td><code>.ts</code> <code>.tsx</code></td><td>24</td></tr>
+        <tr><td>Java</td><td><code>.java</code></td><td>24</td></tr>
+        <tr><td>PHP</td><td><code>.php</code></td><td>23</td></tr>
+        <tr><td>Ruby</td><td><code>.rb</code></td><td>17</td></tr>
+        <tr><td>Go</td><td><code>.go</code></td><td>14</td></tr>
+        <tr><td>C#</td><td><code>.cs</code></td><td>7</td></tr>
+        <tr><td>YAML</td><td><code>.yml</code> <code>.yaml</code></td><td>3</td></tr>
+        <tr><td>JSON</td><td><code>.json</code></td><td>3</td></tr>
+        <tr><td>C</td><td><code>.c</code></td><td>1</td></tr>
+        <tr><td>C++</td><td><code>.cpp</code></td><td>1</td></tr>
+        <tr><td>HTML</td><td><code>.html</code></td><td>1</td></tr>
+        <tr><td>Shell</td><td><code>.sh</code></td><td>1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Dependency scanning reads lockfiles for <strong>Python, npm, Go, Ruby and Maven</strong>
+    (<code>requirements.txt</code>, <code>poetry.lock</code>, <code>Pipfile.lock</code>,
+    <code>package-lock.json</code>, <code>yarn.lock</code>, <code>go.mod</code>,
+    <code>Gemfile.lock</code>, <code>pom.xml</code>) and matches every pinned package
+    against the OSV database.
+  </p>
+</main>
+
+<footer class="doc-foot">
+  <span>MIT licensed &middot; analysis runs locally, nothing uploaded.</span>
+  <a href="https://github.com/mugdhav/security-preview-tool">Repository</a>
+  <a href="https://github.com/mugdhav/security-preview-tool/issues">Report an issue</a>
+</footer>
+</body>
+</html>
