@@ -1,21 +1,48 @@
-# security-preview
+# Vulnascan
 
-`security-preview` is a **deterministic, non-LLM** static security scanner for a
-local project directory. It runs regex + AST pattern rules (SAST) and real
-dependency CVE matching (SCA, via `api.osv.dev`), then produces a vulnerability
-report with per-finding remediation. Nothing about the analysis is model-driven,
-so the same tree always yields the same report.
+**Vulnascan** is a **deterministic, non-LLM** static security scanner for your
+application's local project directory. Point it at a folder and it hands back a
+vulnerability report. Nothing about the analysis is model-driven, so the same
+code always produces the same report.
 
-It ships in **three shapes over one shared engine**:
+Run it yourself as a desktop application or CLI, or give it to your coding agent
+to run a quick review and remediation — fast and free.
 
-| Version | Entry point | Who uses it | More |
+## What it does
+
+- **Finds vulnerable code (SAST).** A pattern engine — regex + AST rules —
+  searches your source for injection, XSS, path traversal, hardcoded secrets,
+  weak crypto, insecure deserialization, SSRF, and around two dozen other
+  vulnerability classes (28 rule types in all). Every finding carries a CWE id
+  and a *vulnerable → secure* remediation pair.
+- **Finds vulnerable dependencies (SCA).** It parses your lockfiles and checks
+  every pinned package against the OSV vulnerability database (CVE / GHSA / OSV
+  advisories, with the fixed version and severity). Reported in a separate
+  section from the code findings.
+- **Produces a report you can act on.** `text`, `markdown`, `json`, `sarif`, or
+  a single self-contained `html` file — each finding with its location, a masked
+  code snippet, a plain-language explanation, and the fix. Secrets are masked
+  before they ever reach a report.
+
+## Languages
+
+Pattern rules cover **14 languages and config formats** (17 file extensions).
+Coverage is deep for Python, JavaScript, TypeScript, Java, PHP, and Ruby, and
+targeted for Go, C#, C, C++, YAML, JSON, HTML, and Shell. Dependency scanning is
+language-agnostic and reads lockfiles for Python, npm, Go, Ruby, and Maven. Full
+breakdown in [Supported languages](#supported-languages).
+
+## Three ways to run it
+
+Vulnascan is free and open source, and ships in **three shapes over one shared
+engine**. All three call the same `scan(path, ScanConfig) -> ScanResult` — there
+are no divergent code paths.
+
+| Shape | Entry point | Who it's for | More |
 |---|---|---|---|
-| **1 · Browser / Desktop app** | `security-preview serve` · or the double-click installer | A person who wants to point at a folder and read a rendered report | [below](#1--browser--desktop-app), [`docs/DESKTOP.md`](docs/DESKTOP.md) |
-| **2 · CLI** | `security-preview scan <path>` | A terminal user; also what CI calls | [below](#2--cli), [`docs/USAGE.md`](docs/USAGE.md) |
-| **3 · Coding-agent skill** | [`SKILL.md`](SKILL.md) + `scripts/bootstrap.py` | Claude Code / Cursor, on demand or via a `SessionStart` hook | [below](#3--coding-agent-skill) |
-
-All three call the same `scan(path, ScanConfig) -> ScanResult`. There are no
-divergent code paths.
+| **Desktop / browser app** | `security-preview serve`, or the double-click installer | Point at a folder, read a rendered report | [below](#1--browser--desktop-app), [`docs/DESKTOP.md`](docs/DESKTOP.md) |
+| **CLI** | `security-preview scan <path>` | Terminal users; also what CI calls | [below](#2--cli), [`docs/USAGE.md`](docs/USAGE.md) |
+| **Coding-agent skill** | [`SKILL.md`](SKILL.md) + `scripts/bootstrap.py` | Claude Code / Cursor, on demand or via a `SessionStart` hook | [below](#3--coding-agent-skill) |
 
 ![Architecture — one engine, three shapes](docs/images/architecture.svg)
 
